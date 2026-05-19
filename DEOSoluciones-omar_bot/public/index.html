@@ -58,7 +58,7 @@
   /* ── BOT STYLES ── */
   #chat-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: #0057ff; border-radius: 50%; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(0,87,255,0.4); font-size: 26px; z-index: 9999; transition: transform 0.2s; }
   #chat-btn:hover { transform: scale(1.1); }
-  #chat-box { display: none; position: fixed; bottom: 100px; right: 30px; width: 340px; height: 520px; background: #fff; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.15); flex-direction: column; z-index: 9999; overflow: hidden; }
+  #chat-box { display: none; position: fixed; bottom: 100px; right: 10px; width: min(340px, calc(100vw - 20px)); height: 520px; background: #fff; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.15); flex-direction: column; z-index: 9999; overflow: hidden; }
   #chat-box.abierto { display: flex; }
   #chat-header { background: linear-gradient(135deg, #0057ff, #0040cc); color: white; padding: 14px 16px; display: flex; align-items: center; gap: 10px; font-family: sans-serif; }
   #chat-header .info { flex: 1; }
@@ -171,8 +171,8 @@
 </div>
 
 <!-- Login Modal -->
-<div id="loginModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center px-8">
-  <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-md w-full border border-gray-200 dark:border-gray-700 shadow-2xl">
+<div id="loginModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center px-8" onclick="toggleLoginModal()">
+  <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-md w-full border border-gray-200 dark:border-gray-700 shadow-2xl" onclick="event.stopPropagation()">
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-2xl font-headline font-bold dark:text-white">Acceso Central</h2>
       <button onclick="toggleLoginModal()" class="text-gray-500 hover:text-black dark:hover:text-white transition-colors">
@@ -241,7 +241,7 @@
           </div>
         </div>
         <div class="min-w-full h-full relative">
-          <img src="images/hikvision.jpg" alt="Hikvision" class="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-700">
+          <img src="images/hikvision.jpg" alt="Hikvision" loading="lazy" class="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-700">
           <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex flex-col items-center justify-center text-center p-6">
             <h2 class="text-4xl md:text-7xl font-headline font-black text-white mb-4 drop-shadow-lg uppercase tracking-tighter">Hikvision</h2>
             <p class="text-white/90 text-lg md:text-xl font-medium mb-8">Conoce el sistema de reconocimiento facial</p>
@@ -251,7 +251,7 @@
           </div>
         </div>
         <div class="min-w-full h-full relative">
-          <img src="images/pcs_cl.jpg" alt="Productos" class="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-700">
+          <img src="images/pcs_cl.jpg" alt="Productos" loading="lazy" class="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-700">
           <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex flex-col items-center justify-center text-center p-6">
             <h2 class="text-4xl md:text-7xl font-headline font-black text-white mb-4 drop-shadow-lg uppercase tracking-tighter">Productos</h2>
             <p class="text-white/90 text-lg md:text-xl font-medium mb-8">Conoce nuestros productos</p>
@@ -261,7 +261,7 @@
           </div>
         </div>
         <div class="min-w-full h-full relative">
-          <img src="images/serv_tecni.jpg" alt="Servicios" class="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-700">
+          <img src="images/serv_tecni.jpg" alt="Servicios" loading="lazy" class="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-700">
           <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex flex-col items-center justify-center text-center p-6">
             <h2 class="text-4xl md:text-7xl font-headline font-black text-white mb-4 drop-shadow-lg uppercase tracking-tighter">Servicios</h2>
             <p class="text-white/90 text-lg md:text-xl font-medium mb-8">Conoce nuestros servicios</p>
@@ -271,6 +271,12 @@
           </div>
         </div>
       </div>
+      <button onclick="moveCarousel((currentSlide - 1 + totalSlides) % totalSlides)" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/70 hover:bg-white rounded-full flex items-center justify-center shadow-lg z-10 transition-all">
+        <span class="material-symbols-outlined text-gray-800">chevron_left</span>
+      </button>
+      <button onclick="moveCarousel((currentSlide + 1) % totalSlides)" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/70 hover:bg-white rounded-full flex items-center justify-center shadow-lg z-10 transition-all">
+        <span class="material-symbols-outlined text-gray-800">chevron_right</span>
+      </button>
       <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3">
         <button onclick="moveCarousel(0)" class="w-3 h-3 rounded-full bg-white transition-colors carousel-dot"></button>
         <button onclick="moveCarousel(1)" class="w-3 h-3 rounded-full bg-white/50 transition-colors carousel-dot"></button>
@@ -432,7 +438,7 @@
 </footer>
 
 <!-- WhatsApp -->
-<a href="https://wa.me/573242600709?text=Hola,%20vengo%20de%20la%20p%C3%A1gina%20web%20de%20DEOSOLUCIONES%20y%20quiero%20m%C3%A1s%20informaci%C3%B3n" target="_blank" id="wsp-btn" title="Chatea por WhatsApp">
+<a href="https://wa.me/573242600709?text=Hola,%20vengo%20de%20la%20p%C3%A1gina%20web%20de%20DEOSOLUCIONES%20y%20quiero%20m%C3%A1s%20informaci%C3%B3n" target="_blank" rel="noopener noreferrer" id="wsp-btn" title="Chatea por WhatsApp">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="white">
     <path d="M16 .5C7.44.5.5 7.44.5 16c0 2.83.74 5.49 2.04 7.79L.5 31.5l7.93-2.07A15.45 15.45 0 0016 31.5c8.56 0 15.5-6.94 15.5-15.5S24.56.5 16 .5zm0 28.13c-2.4 0-4.7-.64-6.71-1.84l-.48-.29-4.71 1.23 1.26-4.59-.31-.5A12.62 12.62 0 013.38 16C3.38 9.04 9.04 3.38 16 3.38S28.62 9.04 28.62 16 22.96 28.63 16 28.63zm6.92-9.46c-.38-.19-2.24-1.1-2.59-1.23-.35-.13-.6-.19-.85.19s-.97 1.23-1.19 1.48c-.22.25-.44.28-.81.09-.38-.19-1.6-.59-3.04-1.88-1.13-1-1.88-2.24-2.1-2.62-.22-.38-.02-.59.17-.78.17-.17.38-.44.56-.66.19-.22.25-.38.38-.63.13-.25.06-.47-.03-.66-.09-.19-.85-2.05-1.17-2.81-.31-.74-.62-.64-.85-.65l-.72-.01c-.25 0-.66.09-1 .47-.34.38-1.31 1.28-1.31 3.13s1.34 3.63 1.53 3.88c.19.25 2.64 4.04 6.4 5.66.89.39 1.59.62 2.13.79.9.29 1.71.25 2.36.15.72-.11 2.24-.92 2.55-1.8.31-.88.31-1.63.22-1.8-.09-.16-.34-.25-.72-.44z"/>
   </svg>
@@ -505,6 +511,12 @@
   function toggleMobileMenu() {
     document.getElementById('mobileMenu').classList.toggle('hidden');
   }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const modal = document.getElementById('loginModal');
+      if (!modal.classList.contains('hidden')) toggleLoginModal();
+    }
+  });
 
   // Carrusel
   let currentSlide = 0;
@@ -602,6 +614,7 @@
           const btn = document.createElement('a');
           btn.href = 'https://wa.me/573242600709?text=Hola,%20vengo%20de%20la%20p%C3%A1gina%20web%20de%20DEOSOLUCIONES';
           btn.target = '_blank';
+          btn.rel = 'noopener noreferrer';
           btn.className = 'quick-btn';
           btn.style.cssText = 'background:#25D366;color:white;border-color:#25D366;text-decoration:none;';
           btn.textContent = '💬 Abrir WhatsApp';
