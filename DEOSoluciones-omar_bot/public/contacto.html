@@ -299,9 +299,6 @@
   function toggleMobileMenu() {
     document.getElementById('mobileMenu').classList.toggle('hidden');
   }
-  function handleGoogleLogin() {
-    if (window.handleGoogleLoginFn) window.handleGoogleLoginFn();
-  }
   async function handleAdminLogin() {
     const password = prompt('Contraseña de administrador:');
     if (!password) return;

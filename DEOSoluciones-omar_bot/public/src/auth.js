@@ -4,8 +4,6 @@ import {
     db, doc, getDoc, setDoc
 } from './firebase_config.js';
 
-console.log("🔐 DEOSoluciones Auth Module Loaded");
-
 // --- MANEJO DE ERRORES ---
 function getFriendlyErrorMessage(errorCode) {
     const errorMessages = {
@@ -247,8 +245,8 @@ async function createOrUpdateUserDocument(user) {
                 createdAt: new Date().toISOString()
             });
         }
-    } catch (error) {
-        console.error('Error al crear documento de usuario:', error);
+    } catch {
+        // silenced
     }
 }
 
@@ -261,11 +259,10 @@ async function getUserRole(uid) {
             const userData = userDoc.data();
             return userData.rol || 'cliente';
         } else {
-            console.log('❌ Documento no existe en Firestore');
             return 'cliente';
         }
-    } catch (error) {
-        console.error('❌ Error al obtener rol:', error);
+    } catch {
+        // error silenciado — devuelve rol por defecto
         return 'cliente';
     }
 }

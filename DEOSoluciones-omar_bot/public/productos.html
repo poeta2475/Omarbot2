@@ -293,9 +293,6 @@
       alert('Error al conectar con el servidor');
     }
   }
-  function handleGoogleLogin() {
-    if (window.handleGoogleLoginFn) window.handleGoogleLoginFn();
-  }
   function toggleMobileMenu() {
     document.getElementById('mobileMenu').classList.toggle('hidden');
   }
@@ -337,6 +334,10 @@
     renderProducts();
   }
 
+  function escapeHtml(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
+  }
+
   function renderProducts() {
     const grid = document.getElementById('productGrid');
     const emptyState = document.getElementById('emptyState');
@@ -364,14 +365,14 @@
       return `
         <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all overflow-hidden group">
           <div class="bg-gray-100 dark:bg-gray-700 relative overflow-hidden">
-            <img src="${p.imagen_url || 'https://via.placeholder.com/400x300?text=Sin+imagen'}" alt="${p.nombre}" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"/>
+            <img src="${escapeHtml(p.imagen_url || 'https://via.placeholder.com/400x300?text=Sin+imagen')}" alt="${escapeHtml(p.nombre)}" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"/>
             <div class="absolute top-3 right-3 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold">
-              ${p.categoria || 'General'}
+              ${escapeHtml(p.categoria || 'General')}
             </div>
           </div>
           <div class="p-6">
-            <h3 class="text-lg font-bold mb-2 dark:text-white">${p.nombre}</h3>
-            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">${p.descripcion || ''}</p>
+            <h3 class="text-lg font-bold mb-2 dark:text-white">${escapeHtml(p.nombre)}</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">${escapeHtml(p.descripcion || '')}</p>
             <div class="flex justify-between items-center mb-4">
               <span class="text-2xl font-bold text-blue-600">$${p.precio?.toLocaleString() || '0'}</span>
               <span class="text-xs text-gray-500 dark:text-gray-400">Stock: ${p.stock || '0'}</span>
