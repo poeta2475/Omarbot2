@@ -296,6 +296,12 @@ export async function handleAdminLogin() {
     }
 }
 
+// --- FORMULARIO DE LOGIN ---
+document.addEventListener('DOMContentLoaded', () => {
+    const authForm = document.getElementById('authForm');
+    if (authForm) authForm.addEventListener('submit', handleAuthFormSubmit);
+});
+
 // --- EXPOSICION GLOBAL ---
 window.toggleLoginModal = toggleLoginModal;
 window.showRegisterForm = showRegisterForm;
