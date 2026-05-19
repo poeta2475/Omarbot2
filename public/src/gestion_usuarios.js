@@ -1,9 +1,13 @@
-import { 
+import {
     db, collection, getDocs, query, where, auth, onAuthStateChanged, doc, getDoc
 } from './firebase_config.js';
 import { showNotification } from './auth.js';
 
 const usuariosTableBody = document.getElementById('usuariosTableBody');
+
+function escapeHtml(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
+}
 
 // Verificar si el usuario es administrador
 onAuthStateChanged(auth, async (user) => {
@@ -30,8 +34,7 @@ onAuthStateChanged(auth, async (user) => {
         } else {
             window.location.href = 'index.html';
         }
-    } catch (error) {
-        console.error('Error al verificar permisos:', error);
+    } catch {
         window.location.href = 'index.html';
     }
 });
@@ -71,20 +74,19 @@ async function cargarUsuarios() {
             }
 
             row.innerHTML = `
-                <td class="px-6 py-4 font-medium text-gray-900">${user.nombre || 'Sin nombre'}</td>
-                <td class="px-6 py-4 text-gray-600">${user.correo}</td>
-                <td class="px-6 py-4 text-gray-600">${user.telefono || 'Sin teléfono'}</td>
-                <td class="px-6 py-4 text-gray-600">${fecha}</td>
+                <td class="px-6 py-4 font-medium text-gray-900">${escapeHtml(user.nombre || 'Sin nombre')}</td>
+                <td class="px-6 py-4 text-gray-600">${escapeHtml(user.correo)}</td>
+                <td class="px-6 py-4 text-gray-600">${escapeHtml(user.telefono || 'Sin teléfono')}</td>
+                <td class="px-6 py-4 text-gray-600">${escapeHtml(fecha)}</td>
                 <td class="px-6 py-4">
                     <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full uppercase">
-                        ${user.rol}
+                        ${escapeHtml(user.rol)}
                     </span>
                 </td>
             `;
             usuariosTableBody.appendChild(row);
         });
-    } catch (error) {
-        console.error('Error al cargar usuarios:', error);
+    } catch {
         showNotification('Error al cargar el listado de usuarios', 'error');
         usuariosTableBody.innerHTML = `
             <tr>

@@ -339,6 +339,13 @@
     return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
   }
 
+  function safeUrl(url) {
+    try {
+      const u = new URL(url);
+      return (u.protocol === 'https:' || u.protocol === 'http:') ? url : '';
+    } catch { return ''; }
+  }
+
   function renderProducts() {
     const grid = document.getElementById('productGrid');
     const emptyState = document.getElementById('emptyState');
@@ -366,7 +373,7 @@
       return `
         <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all overflow-hidden group">
           <div class="bg-gray-100 dark:bg-gray-700 relative overflow-hidden">
-            <img src="${escapeHtml(p.imagen_url || 'https://via.placeholder.com/400x300?text=Sin+imagen')}" alt="${escapeHtml(p.nombre)}" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"/>
+            <img src="${escapeHtml(safeUrl(p.imagen_url) || 'https://via.placeholder.com/400x300?text=Sin+imagen')}" alt="${escapeHtml(p.nombre)}" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"/>
             <div class="absolute top-3 right-3 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold">
               ${escapeHtml(p.categoria || 'General')}
             </div>

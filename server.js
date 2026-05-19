@@ -14,6 +14,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) throw new Error('JWT_SECRET no definida en variables de entorno');
+if (!process.env.ADMIN_PASSWORD) throw new Error('ADMIN_PASSWORD no definida en variables de entorno');
+if (!process.env.RESEND_API_KEY) throw new Error('RESEND_API_KEY no definida en variables de entorno');
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // ──────────────────────────────────────────
@@ -43,6 +45,14 @@ app.use(helmet({
     }
   },
   crossOriginEmbedderPolicy: false,
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+  permissionsPolicy: {
+    features: {
+      geolocation:  [],
+      microphone:   [],
+      camera:       [],
+    }
+  }
 }));
 
 // CORS
@@ -65,6 +75,16 @@ const corsOptions = {
   maxAge:         86400
 };
 app.use(cors(corsOptions));
+
+if (process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    if (req.headers['x-forwarded-proto'] !== 'https') {
+      return res.redirect(301, 'https://' + req.get('host') + req.url);
+    }
+    next();
+  });
+}
+
 app.use(morgan('combined'));
 app.options('*', cors(corsOptions));
 
@@ -100,10 +120,6 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 let adminPasswordHash = null;
-(async () => {
-  const raw = process.env.ADMIN_PASSWORD;
-  if (raw) adminPasswordHash = await bcrypt.hash(raw, 12);
-})();
 
 // ──────────────────────────────────────────
 // RATE LIMITING
@@ -214,8 +230,8 @@ function verificarToken(req, res, next) {
 // Obtener todos los productos
 app.get('/api/productos', async (req, res) => {
   try {
-    const limit = Math.min(parseInt(req.query.limit) || 20, 100);
-    const page  = Math.max(parseInt(req.query.page)  || 1, 1);
+    const limit = Math.min(parseInt(req.query.limit, 10) || 20, 100);
+    const page  = Math.max(parseInt(req.query.page,  10) || 1, 1);
 
     let query = db.collection('productos').orderBy('fecha_creacion', 'desc');
     const totalSnap = await db.collection('productos').count().get();
@@ -247,6 +263,12 @@ app.post('/api/productos', verificarToken, async (req, res) => {
   try {
     const nuevoProducto = sanitizarProducto(req.body);
     if (!nuevoProducto.nombre) return res.status(400).json({ error: 'El nombre es requerido' });
+    if (nuevoProducto.precio !== undefined && (isNaN(Number(nuevoProducto.precio)) || Number(nuevoProducto.precio) < 0)) {
+      return res.status(400).json({ error: 'El precio debe ser un número positivo' });
+    }
+    if (nuevoProducto.stock !== undefined && (isNaN(Number(nuevoProducto.stock)) || Number(nuevoProducto.stock) < 0)) {
+      return res.status(400).json({ error: 'El stock debe ser un número positivo' });
+    }
     const docRef = await db.collection('productos').add({
       ...nuevoProducto,
       fecha_creacion: admin.firestore.FieldValue.serverTimestamp()
@@ -280,7 +302,10 @@ app.put('/api/productos/:id', verificarToken, async (req, res) => {
 app.delete('/api/productos/:id', verificarToken, async (req, res) => {
   try {
     const { id } = req.params;
-    await db.collection('productos').doc(id).delete();
+    const docRef = db.collection('productos').doc(id);
+    const doc = await docRef.get();
+    if (!doc.exists) return res.status(404).json({ error: `Producto con ID ${id} no existe` });
+    await docRef.delete();
     res.json({ message: 'Producto eliminado correctamente' });
   } catch (error) {
     console.error('Error al eliminar producto:', error);
@@ -393,9 +418,18 @@ app.use((req, res) => {
 // ──────────────────────────────────────────
 // Iniciar servidor
 // ──────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`✅ Servidor DEOSoluciones corriendo en http://localhost:${PORT}`);
-});
+async function iniciarServidor() {
+  try {
+    adminPasswordHash = await bcrypt.hash(process.env.ADMIN_PASSWORD, 12);
+  } catch (error) {
+    console.error('Error crítico al inicializar:', error);
+    process.exit(1);
+  }
+  app.listen(PORT, () => {
+    console.log(`✅ Servidor DEOSoluciones corriendo en http://localhost:${PORT}`);
+  });
+}
+iniciarServidor();
 
 process.on('SIGTERM', () => {
   console.log('SIGTERM recibido. Cerrando servidor...');
