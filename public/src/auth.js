@@ -63,7 +63,7 @@ export function showNotification(message, type = 'info') {
                 <span class="material-symbols-outlined text-white text-2xl">${config.icon}</span>
             </div>
             <div class="flex-1 py-3 pr-3">
-                <p class="text-gray-800 font-medium text-sm leading-relaxed">${message}</p>
+                <p class="text-gray-800 font-medium text-sm leading-relaxed deo-notif-msg"></p>
             </div>
             <button class="self-start mt-2 mr-2 p-1 hover:bg-gray-100 rounded-full transition-colors" onclick="this.closest('.deo-notification').remove()">
                 <span class="material-symbols-outlined text-gray-400 text-lg hover:text-gray-600">close</span>
@@ -73,6 +73,7 @@ export function showNotification(message, type = 'info') {
             <div class="h-full bg-gradient-to-r ${config.color} progress-bar" style="width: 100%; animation: progress 4s linear forwards;"></div>
         </div>
     `;
+    notification.querySelector('.deo-notif-msg').textContent = message;
 
     // Agregar estilos de animación si no existen
     if (!document.getElementById('deo-notification-styles')) {

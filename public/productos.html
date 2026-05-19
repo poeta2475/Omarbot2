@@ -277,7 +277,7 @@
     const password = prompt('Contraseña de administrador:');
     if (!password) return;
     try {
-      const res = await fetch('/api/admin-login', {
+      const res = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password })
@@ -312,8 +312,9 @@
     const grid = document.getElementById('productGrid');
     const emptyState = document.getElementById('emptyState');
     try {
-      const response = await fetch('/api/productos');
-      allProducts = await response.json();
+      const response = await fetch('/api/productos?limit=100');
+      const data = await response.json();
+      allProducts = data.productos ?? data;
       renderProducts();
     } catch (error) {
       grid.innerHTML = '<div class="col-span-full text-center text-red-500 dark:text-red-400">Error al cargar el catálogo.</div>';

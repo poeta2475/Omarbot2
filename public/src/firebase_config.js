@@ -4,9 +4,9 @@
 
 // Importar funciones de Firebase desde el CDN oficial
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-analytics.js";
 import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, query, orderBy, setDoc, getDoc, where } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app-check.js";
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -21,7 +21,20 @@ const firebaseConfig = {
 
 // Inicializar Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+
+// App Check con reCAPTCHA v3 — protege Firestore de accesos no autorizados.
+// Pasos para activar:
+//   1. Firebase console → App Check → Apps → Registrar con reCAPTCHA v3
+//   2. Google Cloud Console → reCAPTCHA → crear sitio v3 → copiar Site Key
+//   3. Reemplazar 'REEMPLAZAR_CON_SITE_KEY_RECAPTCHA_V3' con esa clave
+//   4. Firebase console → App Check → Enforce para Firestore y Auth
+const RECAPTCHA_SITE_KEY = 'REEMPLAZAR_CON_SITE_KEY_RECAPTCHA_V3';
+if (RECAPTCHA_SITE_KEY !== 'REEMPLAZAR_CON_SITE_KEY_RECAPTCHA_V3') {
+  initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider(RECAPTCHA_SITE_KEY),
+    isTokenAutoRefreshEnabled: true
+  });
+}
 
 // Inicializar Authentication
 const auth = getAuth(app);

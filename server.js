@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 const jwt = require('jsonwebtoken');
@@ -64,6 +65,7 @@ const corsOptions = {
   maxAge:         86400
 };
 app.use(cors(corsOptions));
+app.use(morgan('combined'));
 app.options('*', cors(corsOptions));
 
 app.use(express.json({ limit: '2mb' }));
@@ -88,6 +90,12 @@ if (!admin.apps.length) {
 }
 
 const db = admin.firestore();
+
+let adminPasswordHash = null;
+(async () => {
+  const raw = process.env.ADMIN_PASSWORD;
+  if (raw) adminPasswordHash = await bcrypt.hash(raw, 12);
+})();
 
 // ──────────────────────────────────────────
 // RATE LIMITING
@@ -140,6 +148,13 @@ const emailDestinatarios = process.env.CONTACT_EMAIL_TO
   : ['omarsena2475@gmail.com'];
 
 // ──────────────────────────────────────────
+// API - Health check
+// ──────────────────────────────────────────
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// ──────────────────────────────────────────
 // RUTAS HTML
 // ──────────────────────────────────────────
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
@@ -153,31 +168,19 @@ app.get('/contacto', (req, res) => res.sendFile(path.join(__dirname, 'public', '
 // ──────────────────────────────────────────
 app.post('/api/login', loginLimiter, async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password) return res.status(400).json({ error: 'Email y contraseña son requeridos' });
+  if (!password) return res.status(400).json({ error: 'Contraseña requerida' });
   try {
     const adminEmail = process.env.ADMIN_EMAIL || 'admin@deosoluciones.com';
-    const adminPassword = process.env.ADMIN_PASSWORD;
-    if (!adminPassword) return res.status(500).json({ error: 'Servidor no configurado correctamente' });
-    if (email === adminEmail && password === adminPassword) {
-      const token = jwt.sign({ email, role: 'admin' }, JWT_SECRET, { expiresIn: '8h' });
-      return res.json({ token, message: 'Login exitoso' });
-    }
-    return res.status(401).json({ error: 'Credenciales incorrectas' });
+    if (email && email !== adminEmail) return res.status(401).json({ error: 'Credenciales incorrectas' });
+    if (!adminPasswordHash) return res.status(500).json({ error: 'Servidor no configurado correctamente' });
+    const ok = await bcrypt.compare(password, adminPasswordHash);
+    if (!ok) return res.status(401).json({ error: 'Credenciales incorrectas' });
+    const token = jwt.sign({ email: email || adminEmail, role: 'admin' }, JWT_SECRET, { expiresIn: '8h' });
+    return res.json({ token, message: 'Login exitoso' });
   } catch (error) {
     console.error('Error en login:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
-});
-
-app.post('/api/admin-login', loginLimiter, (req, res) => {
-  const { password } = req.body;
-  const adminPassword = process.env.ADMIN_PASSWORD;
-  if (!adminPassword) return res.status(500).json({ error: 'Servidor no configurado correctamente' });
-  if (password === adminPassword) {
-    const token = jwt.sign({ role: 'admin' }, JWT_SECRET, { expiresIn: '8h' });
-    return res.json({ token });
-  }
-  return res.status(401).json({ error: 'Contraseña incorrecta' });
 });
 
 // ──────────────────────────────────────────
@@ -201,10 +204,28 @@ function verificarToken(req, res, next) {
 // Obtener todos los productos
 app.get('/api/productos', async (req, res) => {
   try {
-    const snapshot = await db.collection('productos').orderBy('fecha_creacion', 'desc').get();
+    const limit = Math.min(parseInt(req.query.limit) || 20, 100);
+    const page  = Math.max(parseInt(req.query.page)  || 1, 1);
+
+    let query = db.collection('productos').orderBy('fecha_creacion', 'desc');
+    const totalSnap = await db.collection('productos').count().get();
+    const total = totalSnap.data().count;
+
+    if (page > 1) {
+      const prevSnap = await db.collection('productos')
+        .orderBy('fecha_creacion', 'desc')
+        .limit((page - 1) * limit)
+        .get();
+      if (!prevSnap.empty) {
+        const lastDoc = prevSnap.docs[prevSnap.docs.length - 1];
+        query = query.startAfter(lastDoc);
+      }
+    }
+
+    const snapshot = await query.limit(limit).get();
     const productos = [];
     snapshot.forEach(doc => productos.push({ docId: doc.id, ...doc.data() }));
-    res.json(productos);
+    res.json({ productos, total, page, limit, pages: Math.ceil(total / limit) });
   } catch (error) {
     console.error('Error al obtener productos:', error);
     res.status(500).json({ error: 'Error al obtener productos' });
@@ -280,6 +301,9 @@ app.post('/api/contacto', contactoLimiter, async (req, res) => {
   if (!nombre || !telefono || !correo || !servicio || !motivo) {
     return res.status(400).json({ error: 'Faltan campos obligatorios' });
   }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(correo)) return res.status(400).json({ error: 'Correo electrónico no válido' });
+  if (!/^[\d\s\+\-\(\)]{7,20}$/.test(telefono)) return res.status(400).json({ error: 'Teléfono no válido' });
   try {
     await db.collection('contactos').add({
       nombre, telefono, correo,
@@ -350,6 +374,9 @@ app.post('/api/bot', botLimiter, async (req, res) => {
 // Ruta 404
 // ──────────────────────────────────────────
 app.use((req, res) => {
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'Ruta no encontrada' });
+  }
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
@@ -358,4 +385,13 @@ app.use((req, res) => {
 // ──────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`✅ Servidor DEOSoluciones corriendo en http://localhost:${PORT}`);
+});
+
+process.on('SIGTERM', () => {
+  console.log('SIGTERM recibido. Cerrando servidor...');
+  process.exit(0);
+});
+process.on('SIGINT', () => {
+  console.log('SIGINT recibido. Cerrando servidor...');
+  process.exit(0);
 });

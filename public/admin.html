@@ -229,9 +229,10 @@
 
   async function loadProducts() {
     try {
-      const response = await fetch('/api/productos');
+      const response = await fetch('/api/productos?limit=100');
       if (!response.ok) throw new Error('Error al cargar productos');
-      products = await response.json();
+      const data = await response.json();
+      products = data.productos ?? data;
       renderProducts();
     } catch (error) {
       console.error('Error:', error);
