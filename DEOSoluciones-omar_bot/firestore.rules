@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ──────────────────────────────────────────────────────────
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        get(/databases/$(database)/documents/usuarios/$(request.auth.uid))
+          .data.rol in ['admin', 'administrador'];
+    }
+
+    // ── usuarios ─────────────────────────────────────────────────────────
+    // Cada usuario solo lee/edita su propio documento.
+    // Los admins pueden leer todos los documentos (panel de gestión).
+    // Nadie puede borrar desde el cliente.
+    match /usuarios/{userId} {
+      allow read:   if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if false;
+    }
+
+    // ── productos ─────────────────────────────────────────────────────────
+    // Lectura pública (catálogo). Escritura SOLO vía Admin SDK (server.js).
+    match /productos/{docId} {
+      allow read:  if true;
+      allow write: if false;
+    }
+
+    // ── contactos ─────────────────────────────────────────────────────────
+    // Sin acceso directo desde el cliente.
+    // Creación y lectura solo vía Admin SDK (server.js).
+    match /contactos/{docId} {
+      allow read, write: if false;
+    }
+
+    // ── bot_no_entendidos ─────────────────────────────────────────────────
+    // Datos de analítica internos. Solo Admin SDK.
+    match /bot_no_entendidos/{docId} {
+      allow read, write: if false;
+    }
+
+    // ── catch-all: denegar todo lo demás ─────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
