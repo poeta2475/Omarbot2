@@ -47,7 +47,10 @@ app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'Email y contraseña son requeridos' });
   try {
-    if (email === 'admin@deosoluciones.com' && password === 'admin123') {
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@deosoluciones.com';
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    if (!adminPassword) return res.status(500).json({ error: 'Servidor no configurado correctamente' });
+    if (email === adminEmail && password === adminPassword) {
       const token = jwt.sign({ email, role: 'admin' }, JWT_SECRET, { expiresIn: '8h' });
       return res.json({ token, message: 'Login exitoso' });
     }
@@ -56,6 +59,17 @@ app.post('/api/login', async (req, res) => {
     console.error('Error en login:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
+});
+
+app.post('/api/admin-login', (req, res) => {
+  const { password } = req.body;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!adminPassword) return res.status(500).json({ error: 'Servidor no configurado correctamente' });
+  if (password === adminPassword) {
+    const token = jwt.sign({ role: 'admin' }, JWT_SECRET, { expiresIn: '8h' });
+    return res.json({ token });
+  }
+  return res.status(401).json({ error: 'Contraseña incorrecta' });
 });
 
 // ──────────────────────────────────────────

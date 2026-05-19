@@ -284,7 +284,7 @@
   <div class="max-w-7xl mx-auto w-full relative z-10 pb-16">
     <div class="space-y-8 text-center lg:text-left max-w-2xl">
       <span class="hero-fade inline-block px-4 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-blue-600 text-xs font-bold tracking-[0.2em] uppercase border border-gray-300 dark:border-gray-600">
-        SME Intel Engine v2.0
+        Soluciones TI para PyMEs · Medellín
       </span>
       <h1 class="hero-fade delay-1 text-5xl md:text-8xl font-headline font-extrabold tracking-tighter leading-tight">
         DEO<span class="text-blue-600">SOLUCIONES</span>
@@ -293,13 +293,13 @@
         Transformamos retos en soluciones. Control de asistencia biométrico de alta precisión diseñado para el futuro de las PyMEs.
       </p>
       <div class="hero-fade delay-3 flex flex-wrap gap-4 pt-4">
-        <button class="btn-primary-hero px-8 py-4 bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold rounded-xl shadow-lg active:scale-95">
+        <a href="contacto.html" class="btn-primary-hero px-8 py-4 bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold rounded-xl shadow-lg active:scale-95">
           Comenzar ahora
-        </button>
-        <button class="px-8 py-4 border border-gray-300 dark:border-gray-600 text-black dark:text-white font-bold rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all active:scale-95 flex items-center gap-2">
+        </a>
+        <a href="servicios.html" class="px-8 py-4 border border-gray-300 dark:border-gray-600 text-black dark:text-white font-bold rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all active:scale-95 flex items-center gap-2">
           <span class="material-symbols-outlined">play_circle</span>
           Ver demo
-        </button>
+        </a>
       </div>
     </div>
   </div>
@@ -411,7 +411,7 @@
   <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
     <div>
       <img src="images/Logo6fn.png" alt="DEOSOLUCIONES Logo" class="h-12 w-auto md:h-14 lg:h-16 mb-4 dark:invert">
-      <p class="font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 mb-6">© 2024 DEOSOLUCIONES. Engineered for Intelligence.</p>
+      <p class="font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 mb-6">© 2026 DEOSOLUCIONES. Engineered for Intelligence.</p>
       <div class="flex gap-4">
         <a class="text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#"><span class="material-symbols-outlined">public</span></a>
         <a class="text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#"><span class="material-symbols-outlined">alternate_email</span></a>
@@ -420,12 +420,12 @@
     </div>
     <div class="grid grid-cols-2 gap-4 text-right">
       <div class="space-y-3">
-        <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#">Privacy Policy</a>
-        <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#">Terms of Service</a>
+        <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="servicios.html">Servicios</a>
+        <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="productos.html">Productos</a>
       </div>
       <div class="space-y-3">
-        <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#">Contact Support</a>
-        <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#">Global Office</a>
+        <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="contacto.html">Contacto</a>
+        <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="nosotros.html">Nosotros</a>
       </div>
     </div>
   </div>
@@ -479,12 +479,24 @@
     modal.classList.toggle('hidden');
     modal.classList.toggle('flex');
   }
-  function handleAdminLogin() {
+  async function handleAdminLogin() {
     const password = prompt('Contraseña de administrador:');
-    if (password === '12345678') {
-      setTimeout(() => { window.location.href = 'admin.html'; }, 500);
-    } else {
-      alert('Contraseña incorrecta');
+    if (!password) return;
+    try {
+      const res = await fetch('/api/admin-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        localStorage.setItem('adminToken', data.token);
+        window.location.href = 'admin.html';
+      } else {
+        alert('Contraseña incorrecta');
+      }
+    } catch {
+      alert('Error al conectar con el servidor');
     }
   }
   function handleGoogleLogin() {
@@ -600,25 +612,6 @@
       });
       return;
     }
-if (['whatsapp', 'wasap', 'wsp'].some(t => textoNorm.includes(t))) {
-  mostrarTyping(600, () => {
-    agregarMensaje('bot', '📱 Puedes escribirnos directamente por WhatsApp:');
-    setTimeout(() => {
-      const div = document.createElement('div');
-      div.className = 'quick-btns';
-      const btn = document.createElement('a');
-      btn.href = 'https://wa.me/573242600709?text=Hola,%20vengo%20de%20la%20p%C3%A1gina%20web%20de%20DEOSOLUCIONES';
-      btn.target = '_blank';
-      btn.className = 'quick-btn';
-      btn.style.cssText = 'background:#25D366;color:white;border-color:#25D366;text-decoration:none;';
-      btn.textContent = '💬 Abrir WhatsApp';
-      div.appendChild(btn);
-      mensajesDiv.appendChild(div);
-      mensajesDiv.scrollTop = mensajesDiv.scrollHeight;
-    }, 400);
-  });
-  return;
-}
     if (triggerFormulario.some(t => textoNorm.includes(t))) {
       mostrarTyping(800, () => mostrarFormulario());
       return;
