@@ -1,2 +1,0 @@
-# Omarbot2
-Copialocal
