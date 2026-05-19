@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Panel Administrador | DEOSOLUCIONES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script type="module" src="src/firebase_config.js"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: { "headline": ["Manrope"], "body": ["Inter"], "label": ["Inter"] },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+    <style>
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-900 text-black dark:text-white font-body transition-colors duration-300">
+
+<!-- Navbar -->
+<nav class="fixed top-0 w-full z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 shadow-sm transition-colors duration-300">
+    <div class="flex justify-between items-center px-8 py-6 max-w-7xl mx-auto">
+        <a href="index.html" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <img src="images/Logo6fn.png" alt="DEOSOLUCIONES Logo" class="h-12 w-auto md:h-16 lg:h-20 dark:invert">
+            <div class="text-2xl font-black tracking-tighter text-blue-600 font-headline">Panel Admin</div>
+        </a>
+        <div class="hidden md:flex space-x-8 font-headline tracking-tight font-bold text-sm uppercase">
+            <a class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" href="index.html">INICIO</a>
+            <a class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" href="productos.html">PRODUCTOS</a>
+            <a class="text-blue-600 border-b-2 border-blue-600 pb-1" href="#dashboard">DASHBOARD</a>
+            <a class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" href="nosotros.html">NOSOTROS</a>
+            <a class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" href="gestion_usuarios.html" target="_blank">USUARIOS</a>
+        </div>
+        <div class="flex items-center gap-3">
+            <button onclick="toggleDarkMode()" id="btn-dark" class="w-10 h-10 rounded-xl border border-gray-200 dark:border-gray-600 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-all">
+                <span class="material-symbols-outlined text-gray-600 dark:text-gray-300" id="dark-icon">dark_mode</span>
+            </button>
+            <button class="hidden md:block bg-gradient-to-br from-red-500 to-red-600 text-white px-6 py-2 rounded-xl font-headline font-bold text-sm uppercase transition-all hover:opacity-90 active:scale-95" onclick="handleLogout()">
+                Cerrar Sesión
+            </button>
+            <button onclick="toggleMobileMenu()" class="md:hidden w-9 h-9 rounded-xl border border-gray-200 dark:border-gray-600 flex items-center justify-center">
+                <span class="material-symbols-outlined text-gray-600 dark:text-gray-300">menu</span>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- Menú móvil -->
+<div id="mobileMenu" class="fixed inset-0 bg-white dark:bg-gray-900 z-40 hidden md:hidden pt-24">
+    <div class="flex flex-col items-center justify-center h-full space-y-8 px-8">
+        <a class="text-2xl font-headline font-bold text-gray-800 dark:text-white hover:text-blue-600 transition-colors" href="index.html" onclick="toggleMobileMenu()">INICIO</a>
+        <a class="text-2xl font-headline font-bold text-gray-800 dark:text-white hover:text-blue-600 transition-colors" href="productos.html" onclick="toggleMobileMenu()">PRODUCTOS</a>
+        <a class="text-2xl font-headline font-bold text-gray-800 dark:text-white hover:text-blue-600 transition-colors" href="#dashboard" onclick="toggleMobileMenu()">DASHBOARD</a>
+        <a class="text-2xl font-headline font-bold text-gray-800 dark:text-white hover:text-blue-600 transition-colors" href="gestion_usuarios.html">USUARIOS</a>
+        <button onclick="handleLogout()" class="bg-red-600 text-white px-8 py-3 rounded-xl font-bold uppercase">Cerrar Sesión</button>
+        <button onclick="toggleMobileMenu()" class="absolute top-6 right-6 text-gray-600 dark:text-gray-300">
+            <span class="material-symbols-outlined text-3xl">close</span>
+        </button>
+    </div>
+</div>
+
+<main>
+<!-- Hero -->
+<section class="relative min-h-screen flex items-center pt-24 overflow-hidden px-4 md:px-8">
+    <div class="absolute inset-0 opacity-20 pointer-events-none">
+        <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-red-500 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-[20%] left-[-5%] w-[400px] h-[400px] bg-orange-300 rounded-full blur-[100px]"></div>
+    </div>
+    <div class="max-w-7xl mx-auto w-full text-center relative z-10">
+        <div class="space-y-8">
+            <span class="inline-block px-4 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-red-600 text-xs font-bold tracking-[0.2em] uppercase border border-gray-300 dark:border-gray-600">
+                Panel de Administración
+            </span>
+            <h1 class="text-4xl md:text-8xl font-headline font-extrabold tracking-tighter leading-tight">
+                Gestión de <span class="text-red-600">Productos</span>
+            </h1>
+            <p class="text-base md:text-2xl text-gray-600 dark:text-gray-300 font-light leading-relaxed max-w-3xl mx-auto">
+                Administra tu catálogo de productos de manera eficiente y profesional.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Dashboard -->
+<section class="py-32 px-8 bg-gray-50 dark:bg-gray-800 transition-colors duration-300" id="dashboard">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-headline font-bold tracking-tight mb-4 dark:text-white">Gestión de Productos</h2>
+            <p class="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto mb-8">Administra tu catálogo de productos de manera eficiente y profesional.</p>
+            <div class="flex justify-center gap-4 mb-8">
+                <button onclick="openProductModal()" class="px-6 py-3 bg-blue-600 text-white font-bold rounded-xl hover:opacity-90 transition-all active:scale-95 flex items-center gap-2">
+                    <span class="material-symbols-outlined">add</span>
+                    Agregar Producto
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="productGrid"></div>
+
+        <div id="emptyState" class="text-center py-16 hidden">
+            <div class="max-w-md mx-auto">
+                <span class="material-symbols-outlined text-6xl text-gray-300 dark:text-gray-600 mb-4">inventory_2</span>
+                <h3 class="text-2xl font-bold text-gray-600 dark:text-gray-400 mb-4">No hay productos registrados</h3>
+                <p class="text-gray-500 dark:text-gray-400">Comienza agregando tu primer producto.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal -->
+<div id="productModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center px-8">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-2xl w-full border border-gray-200 dark:border-gray-700 shadow-2xl max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-headline font-bold dark:text-white">Agregar Producto</h2>
+            <button onclick="closeProductModal()" class="text-gray-500 hover:text-black dark:hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-2xl">close</span>
+            </button>
+        </div>
+        <form id="productForm" class="space-y-6">
+            <div class="space-y-4">
+                <label class="block text-sm font-label uppercase tracking-widest text-gray-600 dark:text-gray-400 mb-2">Imagen del Producto</label>
+                <div class="flex items-center gap-6">
+                    <div class="w-32 h-32 bg-gray-100 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg flex items-center justify-center relative overflow-hidden">
+                        <img id="imagePreview" src="" alt="" class="w-full h-full object-cover hidden"/>
+                        <div id="uploadPlaceholder" class="text-center">
+                            <span class="material-symbols-outlined text-4xl text-gray-400">add_photo_alternate</span>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Subir imagen</p>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <input type="file" id="productImage" accept="image/*" class="hidden" onchange="previewImage(event)"/>
+                        <button type="button" onclick="document.getElementById('productImage').click()" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center gap-2">
+                            <span class="material-symbols-outlined">upload</span>
+                            Seleccionar Imagen
+                        </button>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">JPG, PNG (Máx. 800KB)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-label uppercase tracking-widest text-gray-600 dark:text-gray-400">Nombre del Producto</label>
+                    <input type="text" id="productName" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-black dark:text-white placeholder:text-gray-400" placeholder="Ej: Terminal Biométrico"/>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-label uppercase tracking-widest text-gray-600 dark:text-gray-400">Categoría</label>
+                    <select id="productCategory" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-black dark:text-white">
+                        <option value="">Seleccionar categoría</option>
+                        <option value="Computadores">Computadores</option>
+                        <option value="Almacenamiento">Almacenamiento</option>
+                        <option value="Periféricos">Periféricos</option>
+                        <option value="Redes">Redes</option>
+                        <option value="Software">Software</option>
+                        <option value="Servicios">Servicios</option>
+                    </select>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-label uppercase tracking-widest text-gray-600 dark:text-gray-400">Precio</label>
+                    <input type="number" id="productPrice" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-black dark:text-white placeholder:text-gray-400" placeholder="0.00" step="0.01"/>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-label uppercase tracking-widest text-gray-600 dark:text-gray-400">Stock</label>
+                    <input type="number" id="productStock" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-black dark:text-white placeholder:text-gray-400" placeholder="0"/>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block text-sm font-label uppercase tracking-widest text-gray-600 dark:text-gray-400">Descripción</label>
+                <textarea id="productDescription" rows="4" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-black dark:text-white placeholder:text-gray-400" placeholder="Describe las características..."></textarea>
+            </div>
+
+            <div class="flex justify-end gap-4 pt-4">
+                <button type="button" onclick="closeProductModal()" class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    Cancelar
+                </button>
+                <button type="submit" class="px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:opacity-90 transition-all active:scale-95 flex items-center gap-2">
+                    <span class="material-symbols-outlined">save</span>
+                    Guardar Producto
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-white dark:bg-gray-900 w-full py-12 px-8 border-t border-gray-200 dark:border-gray-700 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div>
+            <img src="images/Logo6fn.png" alt="DEOSOLUCIONES Logo" class="h-12 w-auto md:h-14 lg:h-16 mb-4 dark:invert">
+            <p class="font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 mb-6">© 2024 DEOSOLUCIONES. Engineered for Intelligence.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+  // Dark mode
+  function toggleDarkMode() {
+    document.documentElement.classList.toggle('dark');
+    const icon = document.getElementById('dark-icon');
+    if (document.documentElement.classList.contains('dark')) {
+      icon.textContent = 'light_mode';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      icon.textContent = 'dark_mode';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+  if (localStorage.getItem('theme') === 'dark') {
+    document.documentElement.classList.add('dark');
+    document.getElementById('dark-icon').textContent = 'light_mode';
+  }
+
+  function toggleMobileMenu() {
+    document.getElementById('mobileMenu').classList.toggle('hidden');
+  }
+
+  let products = [];
+  let editingDocId = null;
+
+  async function loadProducts() {
+    try {
+      const response = await fetch('/api/productos');
+      if (!response.ok) throw new Error('Error al cargar productos');
+      products = await response.json();
+      renderProducts();
+    } catch (error) {
+      console.error('Error:', error);
+      showNotification('Error al cargar productos del servidor', 'error');
+    }
+  }
+
+  function renderProducts() {
+    const grid = document.getElementById('productGrid');
+    const emptyState = document.getElementById('emptyState');
+    if (products.length === 0) {
+      grid.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      return;
+    }
+    grid.classList.remove('hidden');
+    emptyState.classList.add('hidden');
+    grid.innerHTML = products.map(product => `
+      <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-shadow overflow-hidden group">
+        <div class="bg-gray-100 dark:bg-gray-800 relative overflow-hidden h-64">
+          <img src="${product.imagen_url || 'https://via.placeholder.com/400x300?text=Sin+imagen'}" alt="${product.nombre}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
+          <div class="absolute top-2 right-2 bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-bold">
+            ${product.categoria || 'Sin categoría'}
+          </div>
+        </div>
+        <div class="p-6">
+          <h3 class="text-lg font-bold mb-2 dark:text-white">${product.nombre}</h3>
+          <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">${product.descripcion || 'Sin descripción'}</p>
+          <div class="flex justify-between items-center">
+            <span class="text-2xl font-bold text-blue-600">$${product.precio?.toLocaleString() || '0'}</span>
+            <span class="text-sm text-gray-500 dark:text-gray-400">Stock: ${product.stock || '0'}</span>
+          </div>
+          <div class="flex gap-2 mt-4">
+            <button onclick="editProduct('${product.docId}')" class="flex-1 px-3 py-2 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors flex justify-center items-center gap-1">
+              <span class="material-symbols-outlined text-sm">edit</span>
+              <span class="text-sm font-bold">Editar</span>
+            </button>
+            <button onclick="deleteProduct('${product.docId}')" class="flex-1 px-3 py-2 bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-300 rounded-lg hover:bg-red-200 dark:hover:bg-red-800 transition-colors flex justify-center items-center gap-1">
+              <span class="material-symbols-outlined text-sm">delete</span>
+              <span class="text-sm font-bold">Eliminar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  window.deleteProduct = async function(docId) {
+    if (confirm('¿Estás seguro de eliminar este producto?')) {
+      try {
+        const response = await fetch(`/api/productos/${docId}`, { method: 'DELETE' });
+        if (!response.ok) throw new Error('Error al eliminar');
+        showNotification('Producto eliminado', 'success');
+        await loadProducts();
+      } catch (error) {
+        showNotification('Error al eliminar producto', 'error');
+      }
+    }
+  };
+
+  window.editProduct = function(docId) {
+    const product = products.find(p => p.docId === docId);
+    if (!product) return;
+    editingDocId = docId;
+    document.getElementById('productName').value = product.nombre || '';
+    document.getElementById('productCategory').value = product.categoria || '';
+    document.getElementById('productPrice').value = product.precio || 0;
+    document.getElementById('productStock').value = product.stock || 0;
+    document.getElementById('productDescription').value = product.descripcion || '';
+    const previewImg = document.getElementById('imagePreview');
+    if (product.imagen_url) {
+      previewImg.src = product.imagen_url;
+      previewImg.dataset.hasImage = 'true';
+      previewImg.classList.remove('hidden');
+      document.getElementById('uploadPlaceholder').classList.add('hidden');
+    }
+    document.querySelector('#productModal h2').textContent = 'Editar Producto';
+    openProductModal();
+  };
+
+  document.getElementById('productForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const name = document.getElementById('productName').value;
+    const category = document.getElementById('productCategory').value;
+    const price = parseFloat(document.getElementById('productPrice').value);
+    const stock = parseInt(document.getElementById('productStock').value);
+    const description = document.getElementById('productDescription').value;
+    const previewImg = document.getElementById('imagePreview');
+    if (!name || !category || isNaN(price)) {
+      showNotification('Por favor completa los campos obligatorios', 'error');
+      return;
+    }
+    const productData = {
+      nombre: name, categoria: category, precio: price,
+      stock: isNaN(stock) ? 0 : stock, descripcion: description,
+      imagen_url: previewImg.dataset.hasImage === 'true' ? previewImg.src : 'https://via.placeholder.com/400x300?text=Sin+imagen'
+    };
+    if (!editingDocId) {
+      const maxId = products.length > 0 ? Math.max(...products.map(p => p.id_producto || 0)) : 0;
+      productData.id_producto = maxId + 1;
+    }
+    const url = editingDocId ? `/api/productos/${editingDocId}` : '/api/productos';
+    const method = editingDocId ? 'PUT' : 'POST';
+    try {
+      showNotification(editingDocId ? 'Actualizando...' : 'Guardando...', 'info');
+      const response = await fetch(url, {
+        method, headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(productData)
+      });
+      if (!response.ok) throw new Error((await response.json()).error || 'Error en el servidor');
+      showNotification(editingDocId ? 'Producto actualizado' : 'Producto agregado', 'success');
+      await loadProducts();
+      closeProductModal();
+    } catch (error) {
+      showNotification('Error: ' + error.message, 'error');
+    }
+  });
+
+  function openProductModal() {
+    document.getElementById('productModal').classList.remove('hidden');
+    document.getElementById('productModal').classList.add('flex');
+  }
+
+  function closeProductModal() {
+    document.getElementById('productModal').classList.add('hidden');
+    document.getElementById('productModal').classList.remove('flex');
+    resetProductForm();
+  }
+
+  function resetProductForm() {
+    document.getElementById('productForm').reset();
+    const preview = document.getElementById('imagePreview');
+    preview.src = '';
+    preview.classList.add('hidden');
+    preview.dataset.hasImage = 'false';
+    document.getElementById('uploadPlaceholder').classList.remove('hidden');
+    editingDocId = null;
+    document.querySelector('#productModal h2').textContent = 'Agregar Producto';
+  }
+
+  function previewImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+      if (file.size > 800 * 1024) {
+        showNotification('Imagen demasiado grande (máx 800KB)', 'error');
+        event.target.value = '';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const preview = document.getElementById('imagePreview');
+        preview.src = e.target.result;
+        preview.dataset.hasImage = 'true';
+        preview.classList.remove('hidden');
+        document.getElementById('uploadPlaceholder').classList.add('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 z-[100] p-4 rounded-lg shadow-lg ${
+      type === 'success' ? 'bg-green-500 text-white' :
+      type === 'error' ? 'bg-red-500 text-white' :
+      'bg-blue-500 text-white'
+    }`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    setTimeout(() => { notification.style.opacity = '0'; setTimeout(() => notification.remove(), 300); }, 3000);
+  }
+
+  function handleLogout() {
+    if (confirm('¿Estás seguro de cerrar sesión?')) {
+      showNotification('Sesión cerrada', 'success');
+      setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+    }
+  }
+
+  loadProducts();
+</script>
+
+<script type="module">
+  import { auth, signOut, onAuthStateChanged } from './src/firebase_config.js';
+  async function handleLogout() {
+    try {
+      await signOut(auth);
+      showNotification('Sesión cerrada', 'success');
+      setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+    } catch (error) {
+      showNotification('Error: ' + error.message, 'error');
+    }
+  }
+  onAuthStateChanged(auth, (user) => {
+    if (!user) window.location.href = 'index.html';
+  });
+  window.handleLogout = handleLogout;
+</script>
+</body>
+</html>
