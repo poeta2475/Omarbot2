@@ -42,19 +42,32 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false,
 }));
 
-// CORS — solo dominio de producción (o localhost en dev)
+// CORS
 const allowedOrigins = [
   'https://deosoluciones.com',
   'https://www.deosoluciones.com',
-  ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:3000'] : [])
+  // Orígenes extra definidos en .env (ej: dominio de staging separado por comas)
+  ...(process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',').map(o => o.trim()) : []),
+  // Localhost solo en desarrollo
+  ...(process.env.NODE_ENV !== 'production'
+    ? ['http://localhost:3000', 'http://127.0.0.1:3000']
+    : [])
 ];
+
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) callback(null, true);
-    else callback(new Error('Not allowed by CORS'));
+    // Sin origin = petición directa (curl, Postman, mismo servidor)
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    callback(Object.assign(new Error('CORS: origen no permitido'), { status: 403 }));
   },
-  credentials: true
+  methods:      ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials:  true,
+  maxAge:       86400   // cache preflight 24h
 }));
+
+// Responder preflights explícitamente antes de cualquier otra ruta
+app.options('*', cors());
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
