@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Productos | DEOSOLUCIONES</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        fontFamily: { "headline": ["Manrope"], "body": ["Inter"], "label": ["Inter"] },
+        borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+      },
+    },
+  }
+</script>
+<style>
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  #chat-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: #0057ff; border-radius: 50%; border: none; cursor: pointer; box-shadow: 0 4px 15px rgba(0,87,255,0.4); font-size: 26px; z-index: 9999; transition: transform 0.2s; }
+  #chat-btn:hover { transform: scale(1.1); }
+  #chat-box { display: none; position: fixed; bottom: 100px; right: 30px; width: 320px; height: 450px; background: #fff; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.15); flex-direction: column; z-index: 9999; overflow: hidden; }
+  #chat-box.abierto { display: flex; }
+  #chat-header { background: #0057ff; color: white; padding: 14px 16px; display: flex; align-items: center; gap: 10px; font-family: sans-serif; }
+  #chat-header .info { flex: 1; }
+  #chat-header .nombre { font-weight: bold; font-size: 14px; }
+  #chat-header .estado { font-size: 11px; opacity: 0.85; }
+  #chat-cerrar { background: none; border: none; color: white; font-size: 20px; cursor: pointer; }
+  #chat-mensajes { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; background: #f5f7ff; font-family: sans-serif; font-size: 13px; }
+  .msg { max-width: 80%; padding: 10px 13px; border-radius: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+  .msg.bot { background: #fff; color: #333; align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+  .msg.usuario { background: #0057ff; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+  #chat-input-area { display: flex; padding: 10px; border-top: 1px solid #eee; background: white; gap: 8px; }
+  #chat-input { flex: 1; border: 1px solid #ddd; border-radius: 20px; padding: 8px 14px; font-size: 13px; outline: none; font-family: sans-serif; }
+  #chat-enviar { background: #0057ff; color: white; border: none; border-radius: 50%; width: 36px; height: 36px; font-size: 16px; cursor: pointer; }
+  #wsp-btn { position: fixed; bottom: 100px; right: 30px; width: 60px; height: 60px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(37,211,102,0.4); z-index: 9999; transition: transform 0.2s; text-decoration: none; }
+  #wsp-btn:hover { transform: scale(1.1); }
+  .filter-btn { color: #666; }
+  .dark .filter-btn { color: #ccc; }
+  .filter-btn.active { background: #0057ff; color: white; border-color: #0057ff; }
+  .filter-btn:hover:not(.active) { background: #f3f4f6; }
+  .dark .filter-btn:hover:not(.active) { background: #374151; }
+</style>
+</head>
+<body class="bg-white dark:bg-gray-900 text-black dark:text-white font-body transition-colors duration-300">
+
+<!-- Navbar -->
+<nav class="fixed top-0 w-full z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 shadow-sm transition-colors duration-300">
+  <div class="flex justify-between items-center px-8 py-6 max-w-7xl mx-auto">
+    <a href="index.html" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+      <img src="images/Logo6fn.png" alt="DEOSOLUCIONES Logo" class="h-12 w-auto md:h-16 lg:h-20 dark:invert">
+    </a>
+    <div class="hidden md:flex space-x-8 font-headline tracking-tight font-bold text-sm uppercase items-center">
+      <a class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" href="index.html#solutions">SOLUCIONES</a>
+      <a class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" href="servicios.html">SERVICIOS</a>
+      <a class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" href="nosotros.html">NOSOTROS</a>
+      <a class="text-blue-600 border-b-2 border-blue-600 pb-1" href="productos.html">PRODUCTOS</a>
+      <a class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" href="contacto.html">CONTACTO</a>
+      <a id="adminLink" class="text-red-600 hover:text-red-700 font-bold hidden" href="admin.html">ADMIN</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <button onclick="toggleDarkMode()" id="btn-dark" class="w-10 h-10 rounded-xl border border-gray-200 dark:border-gray-600 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-all">
+        <span class="material-symbols-outlined text-gray-600 dark:text-gray-300" id="dark-icon">dark_mode</span>
+      </button>
+      <button class="bg-gradient-to-br from-blue-500 to-blue-600 text-white px-6 py-2 rounded-xl font-headline font-bold text-sm uppercase transition-all hover:opacity-90 active:scale-95" onclick="toggleLoginModal()">
+        LOGIN
+      </button>
+      <button onclick="toggleMobileMenu()" class="md:hidden w-9 h-9 rounded-xl border border-gray-200 dark:border-gray-600 flex items-center justify-center">
+        <span class="material-symbols-outlined text-gray-600 dark:text-gray-300">menu</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Menú móvil -->
+<div id="mobileMenu" class="fixed inset-0 bg-white dark:bg-gray-900 z-40 hidden md:hidden pt-24">
+  <div class="flex flex-col items-center justify-center h-full space-y-8 px-8">
+    <a class="text-2xl font-headline font-bold dark:text-white hover:text-blue-600 transition-colors" href="index.html#solutions" onclick="toggleMobileMenu()">SOLUCIONES</a>
+    <a class="text-2xl font-headline font-bold dark:text-white hover:text-blue-600 transition-colors" href="servicios.html" onclick="toggleMobileMenu()">SERVICIOS</a>
+    <a class="text-2xl font-headline font-bold dark:text-white hover:text-blue-600 transition-colors" href="nosotros.html" onclick="toggleMobileMenu()">NOSOTROS</a>
+    <a class="text-2xl font-headline font-bold text-blue-600" href="productos.html">PRODUCTOS</a>
+    <a class="text-2xl font-headline font-bold dark:text-white hover:text-blue-600 transition-colors" href="contacto.html" onclick="toggleMobileMenu()">CONTACTO</a>
+    <button onclick="toggleMobileMenu()" class="absolute top-6 right-6 text-gray-600 dark:text-gray-300">
+      <span class="material-symbols-outlined text-3xl">close</span>
+    </button>
+  </div>
+</div>
+
+<!-- Login Modal -->
+<div id="loginModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center px-8">
+  <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-md w-full border border-gray-200 dark:border-gray-700 shadow-2xl">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-headline font-bold dark:text-white">Acceso Central</h2>
+      <button onclick="toggleLoginModal()" class="text-gray-500 hover:text-black dark:hover:text-white transition-colors">
+        <span class="material-symbols-outlined text-2xl">close</span>
+      </button>
+    </div>
+    <form class="space-y-4" id="authForm">
+      <div class="space-y-2">
+        <label class="block text-xs font-label uppercase tracking-widest text-gray-600 dark:text-gray-400 ml-1">Email</label>
+        <input id="authEmail" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-black dark:text-white placeholder:text-gray-400" placeholder="tu@email.com" type="email" required/>
+      </div>
+      <div class="space-y-2">
+        <label class="block text-xs font-label uppercase tracking-widest text-gray-600 dark:text-gray-400 ml-1">Contraseña</label>
+        <input id="authPassword" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-black dark:text-white placeholder:text-gray-400" placeholder="••••••••" type="password" required/>
+      </div>
+      <button class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:opacity-90 transition-all" type="submit">
+        Iniciar Sesión
+      </button>
+    </form>
+    <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">¿Eres administrador?</p>
+      <button onclick="handleAdminLogin()" class="px-4 py-2 bg-red-600 text-white text-sm font-bold rounded-lg hover:bg-red-700 transition-colors">
+        Acceso Admin
+      </button>
+    </div>
+  </div>
+</div>
+
+<main>
+<!-- Hero -->
+<section class="relative pt-32 pb-16 px-8 overflow-hidden">
+  <div class="absolute inset-0 opacity-20 pointer-events-none">
+    <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-blue-500 rounded-full blur-[120px]"></div>
+    <div class="absolute bottom-[20%] left-[-5%] w-[400px] h-[400px] bg-blue-300 rounded-full blur-[100px]"></div>
+  </div>
+  <div class="max-w-7xl mx-auto text-center relative z-10">
+    <span class="inline-block px-4 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-blue-600 text-xs font-bold tracking-[0.2em] uppercase border border-gray-300 dark:border-gray-600 mb-6">
+      Nuestro Catálogo
+    </span>
+    <h1 class="text-5xl md:text-7xl font-headline font-extrabold tracking-tighter leading-tight mb-6">
+      Nuestros <span class="text-blue-600">Productos</span>
+    </h1>
+    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+      Equipos de alta tecnología para el control de su empresa.
+    </p>
+  </div>
+</section>
+
+<!-- Buscador y Filtros -->
+<section class="px-8 mb-12">
+  <div class="max-w-7xl mx-auto">
+    <div class="mb-8">
+      <div class="relative max-w-xl mx-auto">
+        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+        <input id="search-input" type="text" placeholder="Buscar producto..." oninput="filterProducts()"
+          class="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full pl-12 pr-4 py-3 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-black dark:text-white placeholder:text-gray-400"/>
+      </div>
+    </div>
+    <div class="flex flex-wrap justify-center gap-3 mb-8">
+      <button onclick="setFilter('todos')" data-filter="todos" class="filter-btn active px-6 py-2 rounded-full text-sm font-bold border border-gray-300 dark:border-gray-600 transition-all">Todos</button>
+      <button onclick="setFilter('Computadores')" data-filter="Computadores" class="filter-btn px-6 py-2 rounded-full text-sm font-bold border border-gray-300 dark:border-gray-600 transition-all">Computadores</button>
+      <button onclick="setFilter('Almacenamiento')" data-filter="Almacenamiento" class="filter-btn px-6 py-2 rounded-full text-sm font-bold border border-gray-300 dark:border-gray-600 transition-all">Almacenamiento</button>
+      <button onclick="setFilter('Redes')" data-filter="Redes" class="filter-btn px-6 py-2 rounded-full text-sm font-bold border border-gray-300 dark:border-gray-600 transition-all">Redes</button>
+      <button onclick="setFilter('Software')" data-filter="Software" class="filter-btn px-6 py-2 rounded-full text-sm font-bold border border-gray-300 dark:border-gray-600 transition-all">Software</button>
+      <button onclick="setFilter('Servicios')" data-filter="Servicios" class="filter-btn px-6 py-2 rounded-full text-sm font-bold border border-gray-300 dark:border-gray-600 transition-all">Servicios</button>
+    </div>
+  </div>
+</section>
+
+<!-- Grid de productos -->
+<section class="px-8 pb-32" id="products">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="productGrid"></div>
+    <div id="emptyState" class="hidden text-center py-16">
+      <span class="material-symbols-outlined text-6xl text-gray-300 dark:text-gray-600 mb-4">inventory_2</span>
+      <h3 class="text-2xl font-bold text-gray-600 dark:text-gray-400 mb-4">No hay productos disponibles</h3>
+      <p class="text-gray-500 dark:text-gray-400">Pronto agregaremos productos a esta categoría.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-white dark:bg-gray-900 w-full py-12 px-8 border-t border-gray-200 dark:border-gray-700 transition-colors duration-300">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+    <div>
+      <img src="images/Logo6fn.png" alt="DEOSOLUCIONES Logo" class="h-12 w-auto md:h-14 lg:h-16 mb-4 dark:invert">
+      <p class="font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 mb-6">© 2024 DEOSOLUCIONES. Engineered for Intelligence.</p>
+      <div class="flex gap-4">
+        <a class="text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#"><span class="material-symbols-outlined">public</span></a>
+        <a class="text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#"><span class="material-symbols-outlined">alternate_email</span></a>
+        <a class="text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#"><span class="material-symbols-outlined">call</span></a>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4 text-right">
+      <div class="space-y-3">
+        <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#">Privacy Policy</a>
+        <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#">Terms of Service</a>
+      </div>
+      <div class="space-y-3">
+        <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#">Contact Support</a>
+        <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#">Global Office</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- WhatsApp -->
+<a href="https://wa.me/573242600709?text=Hola,%20vengo%20de%20la%20p%C3%A1gina%20web%20de%20DEOSOLUCIONES%20y%20quiero%20m%C3%A1s%20informaci%C3%B3n" target="_blank" id="wsp-btn" title="Chatea por WhatsApp">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="white">
+    <path d="M16 .5C7.44.5.5 7.44.5 16c0 2.83.74 5.49 2.04 7.79L.5 31.5l7.93-2.07A15.45 15.45 0 0016 31.5c8.56 0 15.5-6.94 15.5-15.5S24.56.5 16 .5zm0 28.13c-2.4 0-4.7-.64-6.71-1.84l-.48-.29-4.71 1.23 1.26-4.59-.31-.5A12.62 12.62 0 013.38 16C3.38 9.04 9.04 3.38 16 3.38S28.62 9.04 28.62 16 22.96 28.63 16 28.63zm6.92-9.46c-.38-.19-2.24-1.1-2.59-1.23-.35-.13-.6-.19-.85.19s-.97 1.23-1.19 1.48c-.22.25-.44.28-.81.09-.38-.19-1.6-.59-3.04-1.88-1.13-1-1.88-2.24-2.1-2.62-.22-.38-.02-.59.17-.78.17-.17.38-.44.56-.66.19-.22.25-.38.38-.63.13-.25.06-.47-.03-.66-.09-.19-.85-2.05-1.17-2.81-.31-.74-.62-.64-.85-.65l-.72-.01c-.25 0-.66.09-1 .47-.34.38-1.31 1.28-1.31 3.13s1.34 3.63 1.53 3.88c.19.25 2.64 4.04 6.4 5.66.89.39 1.59.62 2.13.79.9.29 1.71.25 2.36.15.72-.11 2.24-.92 2.55-1.8.31-.88.31-1.63.22-1.8-.09-.16-.34-.25-.72-.44z"/>
+  </svg>
+</a>
+
+<!-- Bot -->
+<button id="chat-btn" title="Chatea con nosotros">💬</button>
+<div id="chat-box">
+  <div id="chat-header">
+    <div style="width:38px;height:38px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;font-size:20px;">🤖</div>
+    <div class="info"><div class="nombre">DEOSOLUCIONES</div><div class="estado">🟢 En línea</div></div>
+    <button id="chat-cerrar">✕</button>
+  </div>
+  <div id="chat-mensajes"></div>
+  <div id="chat-input-area">
+    <input id="chat-input" type="text" placeholder="Escribe tu mensaje..." />
+    <button id="chat-enviar">➤</button>
+  </div>
+</div>
+
+<script>
+  // Dark mode
+  function toggleDarkMode() {
+    document.documentElement.classList.toggle('dark');
+    const icon = document.getElementById('dark-icon');
+    if (document.documentElement.classList.contains('dark')) {
+      icon.textContent = 'light_mode';
+      localStorage.setItem('theme', 'dark');
+    } else {
+      icon.textContent = 'dark_mode';
+      localStorage.setItem('theme', 'light');
+    }
+  }
+  if (localStorage.getItem('theme') === 'dark') {
+    document.documentElement.classList.add('dark');
+    document.getElementById('dark-icon').textContent = 'light_mode';
+  }
+
+  function toggleLoginModal() {
+    const modal = document.getElementById('loginModal');
+    modal.classList.toggle('hidden');
+    modal.classList.toggle('flex');
+  }
+  function handleAdminLogin() {
+    const password = prompt('Contraseña de administrador:');
+    if (password === '12345678') {
+      setTimeout(() => { window.location.href = 'admin.html'; }, 500);
+    } else {
+      alert('Contraseña incorrecta');
+    }
+  }
+  function toggleMobileMenu() {
+    document.getElementById('mobileMenu').classList.toggle('hidden');
+  }
+
+  // Productos desde Firebase API
+  let allProducts = [];
+  let currentFilter = 'todos';
+  let searchTerm = '';
+
+  async function loadProducts() {
+    const grid = document.getElementById('productGrid');
+    const emptyState = document.getElementById('emptyState');
+    try {
+      const response = await fetch('/api/productos');
+      allProducts = await response.json();
+      renderProducts();
+    } catch (error) {
+      grid.innerHTML = '<div class="col-span-full text-center text-red-500 dark:text-red-400">Error al cargar el catálogo.</div>';
+    }
+  }
+
+  function setFilter(filter) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.dataset.filter === filter) btn.classList.add('active');
+    });
+    renderProducts();
+  }
+
+  function filterProducts() {
+    searchTerm = document.getElementById('search-input').value.toLowerCase();
+    renderProducts();
+  }
+
+  function renderProducts() {
+    const grid = document.getElementById('productGrid');
+    const emptyState = document.getElementById('emptyState');
+
+    let filtered = allProducts;
+    if (currentFilter !== 'todos') {
+      filtered = filtered.filter(p => p.categoria === currentFilter);
+    }
+    if (searchTerm) {
+      filtered = filtered.filter(p =>
+        (p.nombre || '').toLowerCase().includes(searchTerm) ||
+        (p.descripcion || '').toLowerCase().includes(searchTerm)
+      );
+    }
+
+    if (filtered.length === 0) {
+      grid.innerHTML = '';
+      emptyState.classList.remove('hidden');
+      return;
+    }
+
+    emptyState.classList.add('hidden');
+    grid.innerHTML = filtered.map(p => {
+      const wsapText = encodeURIComponent(`Hola, vengo de DEOSOLUCIONES y quiero más información sobre: ${p.nombre}`);
+      return `
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all overflow-hidden group">
+          <div class="bg-gray-100 dark:bg-gray-700 relative overflow-hidden">
+            <img src="${p.imagen_url || 'https://via.placeholder.com/400x300?text=Sin+imagen'}" alt="${p.nombre}" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"/>
+            <div class="absolute top-3 right-3 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold">
+              ${p.categoria || 'General'}
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="text-lg font-bold mb-2 dark:text-white">${p.nombre}</h3>
+            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">${p.descripcion || ''}</p>
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-2xl font-bold text-blue-600">$${p.precio?.toLocaleString() || '0'}</span>
+              <span class="text-xs text-gray-500 dark:text-gray-400">Stock: ${p.stock || '0'}</span>
+            </div>
+            <a href="https://wa.me/573242600709?text=${wsapText}" target="_blank"
+              class="block w-full text-center px-4 py-3 bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold rounded-lg hover:opacity-90 transition-all active:scale-95">
+              <span class="material-symbols-outlined align-middle mr-1 text-base">chat</span>
+              Solicitar información
+            </a>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Bot
+  const btnAbrir = document.getElementById('chat-btn');
+  const chatBox = document.getElementById('chat-box');
+  const btnCerrar = document.getElementById('chat-cerrar');
+  const mensajesDiv = document.getElementById('chat-mensajes');
+  const inputChat = document.getElementById('chat-input');
+  const btnEnviar = document.getElementById('chat-enviar');
+  let iniciado = false;
+
+  btnAbrir.addEventListener('click', () => {
+    chatBox.classList.add('abierto');
+    if (!iniciado) {
+      agregarMensaje('bot', '👋 ¡Hola! Bienvenido a DEOSOLUCIONES. ¿En qué te puedo ayudar hoy?\n\nPuedes preguntarme sobre:\n• Servicios\n• Precios\n• Horarios\n• Promociones\n• Contacto');
+      iniciado = true;
+    }
+    inputChat.focus();
+  });
+  btnCerrar.addEventListener('click', () => chatBox.classList.remove('abierto'));
+  btnEnviar.addEventListener('click', enviarMensaje);
+  inputChat.addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensaje(); });
+
+  function enviarMensaje() {
+    const texto = inputChat.value.trim();
+    if (!texto) return;
+    agregarMensaje('usuario', texto);
+    inputChat.value = '';
+    setTimeout(() => {
+      fetch('/api/bot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mensaje: texto })
+      })
+      .then(r => r.json())
+      .then(data => agregarMensaje('bot', data.respuesta))
+      .catch(() => agregarMensaje('bot', '😕 Hubo un error. Contáctanos al 📱 324 260 0709'));
+    }, 500);
+  }
+
+  function agregarMensaje(tipo, texto) {
+    const div = document.createElement('div');
+    div.className = `msg ${tipo}`;
+    div.textContent = texto;
+    mensajesDiv.appendChild(div);
+    mensajesDiv.scrollTop = mensajesDiv.scrollHeight;
+  }
+
+  document.addEventListener('DOMContentLoaded', loadProducts);
+</script>
+
+<script type="module" src="src/auth.js"></script>
+<link rel="stylesheet" href="efectos.css">
+<script src="efectos.js" defer></script>
+</body>
+</html>

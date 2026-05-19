@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Servicios | DEOSOLUCIONES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: { "headline": ["Manrope"], "body": ["Inter"], "label": ["Inter"] },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+    <style>
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-900 text-black dark:text-white font-body transition-colors duration-300">
+
+<!-- Navbar -->
+<nav class="fixed top-0 w-full z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 shadow-sm transition-colors duration-300">
+    <div class="flex justify-between items-center px-8 py-6 max-w-7xl mx-auto">
+        <a href="index.html" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <img src="images/Logo6fn.png" alt="DEOSOLUCIONES Logo" class="h-12 w-auto md:h-16 lg:h-20 dark:invert">
+        </a>
+        <div class="hidden md:flex space-x-8 font-headline tracking-tight font-bold text-sm uppercase items-center">
+            <a class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" href="index.html">SOLUCIONES</a>
+            <a class="text-blue-600 border-b-2 border-blue-600 pb-1" href="servicios.html">SERVICIOS</a>
+            <a class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" href="nosotros.html">NOSOTROS</a>
+            <a class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" href="productos.html">PRODUCTOS</a>
+            <a class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" href="contacto.html">CONTACTO</a>
+        </div>
+        <div class="flex items-center gap-3">
+            <button onclick="toggleDarkMode()" id="btn-dark" class="w-10 h-10 rounded-xl border border-gray-200 dark:border-gray-600 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-all">
+                <span class="material-symbols-outlined text-gray-600 dark:text-gray-300" id="dark-icon">dark_mode</span>
+            </button>
+            <button onclick="toggleLoginModal()" class="hidden md:block bg-gradient-to-br from-blue-500 to-blue-600 text-white px-6 py-2 rounded-xl font-headline font-bold text-sm uppercase transition-all hover:opacity-90 active:scale-95">
+                LOGIN
+            </button>
+            <button onclick="toggleMobileMenu()" class="md:hidden w-9 h-9 rounded-xl border border-gray-200 dark:border-gray-600 flex items-center justify-center">
+                <span class="material-symbols-outlined text-gray-600 dark:text-gray-300">menu</span>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- Menú móvil -->
+<div id="mobileMenu" class="fixed inset-0 bg-white dark:bg-gray-900 z-40 hidden md:hidden pt-24">
+    <div class="flex flex-col items-center justify-center h-full space-y-8 px-8">
+        <a class="text-2xl font-headline font-bold dark:text-white hover:text-blue-600 transition-colors" href="index.html" onclick="toggleMobileMenu()">SOLUCIONES</a>
+        <a class="text-2xl font-headline font-bold text-blue-600" href="servicios.html">SERVICIOS</a>
+        <a class="text-2xl font-headline font-bold dark:text-white hover:text-blue-600 transition-colors" href="nosotros.html" onclick="toggleMobileMenu()">NOSOTROS</a>
+        <a class="text-2xl font-headline font-bold dark:text-white hover:text-blue-600 transition-colors" href="productos.html" onclick="toggleMobileMenu()">PRODUCTOS</a>
+        <a class="text-2xl font-headline font-bold dark:text-white hover:text-blue-600 transition-colors" href="contacto.html" onclick="toggleMobileMenu()">CONTACTO</a>
+        <button onclick="toggleMobileMenu()" class="absolute top-6 right-6 text-gray-600 dark:text-gray-300">
+            <span class="material-symbols-outlined text-3xl">close</span>
+        </button>
+    </div>
+</div>
+
+<!-- Login Modal -->
+<div id="loginModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center px-8">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-md w-full border border-gray-200 dark:border-gray-700 shadow-2xl">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-headline font-bold dark:text-white">Acceso Central</h2>
+            <button onclick="toggleLoginModal()" class="text-gray-500 hover:text-black dark:hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-2xl">close</span>
+            </button>
+        </div>
+        <form class="space-y-4" id="authForm">
+            <div class="space-y-2">
+                <label class="block text-xs font-label uppercase tracking-widest text-gray-600 dark:text-gray-400 ml-1">Email</label>
+                <input id="authEmail" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-black dark:text-white placeholder:text-gray-400" placeholder="tu@email.com" type="email" required/>
+            </div>
+            <div class="space-y-2">
+                <label class="block text-xs font-label uppercase tracking-widest text-gray-600 dark:text-gray-400 ml-1">Contraseña</label>
+                <input id="authPassword" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-black dark:text-white placeholder:text-gray-400" placeholder="••••••••" type="password" required/>
+            </div>
+            <button class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:opacity-90 transition-all" type="submit">
+                Iniciar Sesión
+            </button>
+        </form>
+        <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">¿Eres administrador?</p>
+            <button onclick="handleAdminLogin()" class="px-4 py-2 bg-red-600 text-white text-sm font-bold rounded-lg hover:bg-red-700 transition-colors">
+                Acceso Admin
+            </button>
+        </div>
+    </div>
+</div>
+
+<main>
+
+<!-- Hero -->
+<section class="relative pt-32 pb-20 px-8 bg-gray-50 dark:bg-gray-800 text-center overflow-hidden transition-colors duration-300">
+    <div class="absolute inset-0 opacity-10 pointer-events-none">
+        <div class="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-500 rounded-full blur-[120px]"></div>
+    </div>
+    <div class="max-w-4xl mx-auto relative z-10">
+        <span class="inline-block px-4 py-1 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 text-xs font-bold tracking-[0.2em] uppercase border border-blue-200 dark:border-blue-700 mb-6">
+            Especialización TI
+        </span>
+        <h1 class="text-5xl md:text-7xl font-headline font-bold mb-6 dark:text-white">Nuestros <span class="text-blue-600">Servicios</span></h1>
+        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Soluciones TI integrales para el control, la seguridad y la continuidad operativa de su empresa.</p>
+    </div>
+</section>
+
+<!-- Servicios principales -->
+<section class="py-20 px-8 bg-white dark:bg-gray-900 transition-colors duration-300" id="hikvision">
+    <div class="max-w-7xl mx-auto space-y-16">
+
+        <!-- HikVision -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/20 p-12 rounded-3xl border border-blue-200 dark:border-blue-700 flex items-center justify-center min-h-[300px]">
+                <span class="material-symbols-outlined text-blue-600" style="font-size: 120px;">face_retouching_natural</span>
+            </div>
+            <div class="space-y-6">
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900 rounded-full">
+                    <span class="material-symbols-outlined text-blue-600 text-sm">verified</span>
+                    <span class="text-blue-600 text-xs font-bold uppercase tracking-widest">Control de Acceso</span>
+                </div>
+                <h2 class="text-4xl font-headline font-bold dark:text-white">HikVision</h2>
+                <p class="text-blue-600 font-bold text-lg">Sistema de reconocimiento facial avanzado</p>
+                <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-lg">Implementamos sistemas de control de acceso y asistencia con reconocimiento facial de última generación para empresas que buscan automatización total y seguridad sin fricciones.</p>
+                <ul class="space-y-3">
+                    <li class="flex items-center gap-3 text-gray-700 dark:text-gray-300"><span class="material-symbols-outlined text-green-500">check_circle</span>Reconocimiento facial en tiempo real</li>
+                    <li class="flex items-center gap-3 text-gray-700 dark:text-gray-300"><span class="material-symbols-outlined text-green-500">check_circle</span>Reportes de acceso detallados</li>
+                    <li class="flex items-center gap-3 text-gray-700 dark:text-gray-300"><span class="material-symbols-outlined text-green-500">check_circle</span>Integración con torniquetes y cerraduras</li>
+                    <li class="flex items-center gap-3 text-gray-700 dark:text-gray-300"><span class="material-symbols-outlined text-green-500">check_circle</span>Instalación y capacitación incluida</li>
+                </ul>
+                <a href="contacto.html" class="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 text-white font-bold rounded-xl hover:opacity-90 transition-all active:scale-95">
+                    Solicitar cotización <span class="material-symbols-outlined">arrow_forward</span>
+                </a>
+            </div>
+        </div>
+
+        <hr class="border-gray-200 dark:border-gray-700">
+
+        <!-- Soporte Técnico -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" id="support">
+            <div class="space-y-6 order-2 lg:order-1">
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900 rounded-full">
+                    <span class="material-symbols-outlined text-green-600 text-sm">support_agent</span>
+                    <span class="text-green-600 text-xs font-bold uppercase tracking-widest">Soporte</span>
+                </div>
+                <h2 class="text-4xl font-headline font-bold dark:text-white">Soporte Técnico</h2>
+                <p class="text-green-600 font-bold text-lg">Asistencia técnica y mantenimiento</p>
+                <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-lg">Acompañamiento integral para asegurar la continuidad operativa de su infraestructura tecnológica. Respondemos en menos de 2 horas.</p>
+                <ul class="space-y-3">
+                    <li class="flex items-center gap-3 text-gray-700 dark:text-gray-300"><span class="material-symbols-outlined text-green-500">check_circle</span>Soporte remoto y presencial</li>
+                    <li class="flex items-center gap-3 text-gray-700 dark:text-gray-300"><span class="material-symbols-outlined text-green-500">check_circle</span>Diagnóstico GRATIS</li>
+                    <li class="flex items-center gap-3 text-gray-700 dark:text-gray-300"><span class="material-symbols-outlined text-green-500">check_circle</span>Garantía de 3 meses en reparaciones</li>
+                    <li class="flex items-center gap-3 text-gray-700 dark:text-gray-300"><span class="material-symbols-outlined text-green-500">check_circle</span>Capacitación a usuarios finales</li>
+                </ul>
+                <a href="contacto.html" class="inline-flex items-center gap-2 px-8 py-4 bg-green-600 text-white font-bold rounded-xl hover:opacity-90 transition-all active:scale-95">
+                    Agendar servicio <span class="material-symbols-outlined">arrow_forward</span>
+                </a>
+            </div>
+            <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/20 p-12 rounded-3xl border border-green-200 dark:border-green-700 flex items-center justify-center min-h-[300px] order-1 lg:order-2">
+                <span class="material-symbols-outlined text-green-600" style="font-size: 120px;">support_agent</span>
+            </div>
+        </div>
+
+        <hr class="border-gray-200 dark:border-gray-700">
+
+        <!-- Mantenimiento -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/20 p-12 rounded-3xl border border-purple-200 dark:border-purple-700 flex items-center justify-center min-h-[300px]">
+                <span class="material-symbols-outlined text-purple-600" style="font-size: 120px;">laptop_mac</span>
+            </div>
+            <div class="space-y-6">
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 dark:bg-purple-900 rounded-full">
+                    <span class="material-symbols-outlined text-purple-600 text-sm">build</span>
+                    <span class="text-purple-600 text-xs font-bold uppercase tracking-widest">Mantenimiento</span>
+                </div>
+                <h2 class="text-4xl font-headline font-bold dark:text-white">Mantenimiento</h2>
+                <p class="text-purple-600 font-bold text-lg">Optimización de equipos tecnológicos</p>
+                <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-lg">Optimización de sistema y actualización de hardware para computadores, servidores, NAS y equipos QNAP. Garantizamos el rendimiento óptimo de tu infraestructura.</p>
+                <ul class="space-y-3">
+                    <li class="flex items-center gap-3 text-gray-700 dark:text-gray-300"><span class="material-symbols-outlined text-green-500">check_circle</span>Mantenimiento preventivo y correctivo</li>
+                    <li class="flex items-center gap-3 text-gray-700 dark:text-gray-300"><span class="material-symbols-outlined text-green-500">check_circle</span>Servidores, NAS y QNAP</li>
+                    <li class="flex items-center gap-3 text-gray-700 dark:text-gray-300"><span class="material-symbols-outlined text-green-500">check_circle</span>Actualización de hardware y software</li>
+                    <li class="flex items-center gap-3 text-gray-700 dark:text-gray-300"><span class="material-symbols-outlined text-green-500">check_circle</span>Garantía de 1 año en equipos nuevos</li>
+                </ul>
+                <a href="contacto.html" class="inline-flex items-center gap-2 px-8 py-4 bg-purple-600 text-white font-bold rounded-xl hover:opacity-90 transition-all active:scale-95">
+                    Solicitar mantenimiento <span class="material-symbols-outlined">arrow_forward</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Garantías -->
+<section class="py-20 px-8 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-headline font-bold dark:text-white">Nuestras <span class="text-blue-600">Garantías</span></h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="text-center p-8 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <span class="material-symbols-outlined text-blue-600 text-3xl">timer</span>
+                </div>
+                <h3 class="text-xl font-bold mb-2 dark:text-white">Respuesta en 2 horas</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">Atendemos tu solicitud en menos de 2 horas durante horario laboral.</p>
+            </div>
+            <div class="text-center p-8 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                <div class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <span class="material-symbols-outlined text-green-600 text-3xl">workspace_premium</span>
+                </div>
+                <h3 class="text-xl font-bold mb-2 dark:text-white">Diagnóstico gratis</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">Revisamos tu equipo sin costo. Solo pagas si decides hacer la reparación.</p>
+            </div>
+            <div class="text-center p-8 bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <span class="material-symbols-outlined text-purple-600 text-3xl">verified_user</span>
+                </div>
+                <h3 class="text-xl font-bold mb-2 dark:text-white">Garantía incluida</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">3 meses en servicios técnicos y 1 año en equipos vendidos.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="py-20 px-8 bg-gradient-to-br from-blue-600 to-blue-700">
+    <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-4xl font-headline font-bold text-white mb-6">¿Necesitas alguno de nuestros servicios?</h2>
+        <p class="text-blue-100 text-xl mb-10">Contáctanos ahora y recibe atención personalizada.</p>
+        <div class="flex flex-wrap gap-4 justify-center">
+            <a href="contacto.html" class="px-10 py-4 bg-white text-blue-600 font-bold rounded-xl hover:bg-blue-50 transition-all active:scale-95">
+                Contáctanos
+            </a>
+            <a href="https://wa.me/573242600709?text=Hola,%20vengo%20de%20DEOSOLUCIONES%20y%20quiero%20información%20sobre%20sus%20servicios" target="_blank" class="px-10 py-4 border-2 border-white text-white font-bold rounded-xl hover:bg-white/10 transition-all active:scale-95 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20" fill="white"><path d="M16 .5C7.44.5.5 7.44.5 16c0 2.83.74 5.49 2.04 7.79L.5 31.5l7.93-2.07A15.45 15.45 0 0016 31.5c8.56 0 15.5-6.94 15.5-15.5S24.56.5 16 .5zm0 28.13c-2.4 0-4.7-.64-6.71-1.84l-.48-.29-4.71 1.23 1.26-4.59-.31-.5A12.62 12.62 0 013.38 16C3.38 9.04 9.04 3.38 16 3.38S28.62 9.04 28.62 16 22.96 28.63 16 28.63zm6.92-9.46c-.38-.19-2.24-1.1-2.59-1.23-.35-.13-.6-.19-.85.19s-.97 1.23-1.19 1.48c-.22.25-.44.28-.81.09-.38-.19-1.6-.59-3.04-1.88-1.13-1-1.88-2.24-2.1-2.62-.22-.38-.02-.59.17-.78.17-.17.38-.44.56-.66.19-.22.25-.38.38-.63.13-.25.06-.47-.03-.66-.09-.19-.85-2.05-1.17-2.81-.31-.74-.62-.64-.85-.65l-.72-.01c-.25 0-.66.09-1 .47-.34.38-1.31 1.28-1.31 3.13s1.34 3.63 1.53 3.88c.19.25 2.64 4.04 6.4 5.66.89.39 1.59.62 2.13.79.9.29 1.71.25 2.36.15.72-.11 2.24-.92 2.55-1.8.31-.88.31-1.63.22-1.8-.09-.16-.34-.25-.72-.44z"/></svg>
+                WhatsApp
+            </a>
+        </div>
+    </div>
+</section>
+
+</main>
+
+<!-- Footer -->
+<footer class="bg-white dark:bg-gray-900 w-full py-12 px-8 border-t border-gray-200 dark:border-gray-700 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div>
+            <img src="images/Logo6fn.png" alt="DEOSOLUCIONES Logo" class="h-12 w-auto md:h-14 lg:h-16 mb-4 dark:invert">
+            <p class="font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 mb-6">© 2024 DEOSOLUCIONES. Engineered for Intelligence.</p>
+            <div class="flex gap-4">
+                <a class="text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#"><span class="material-symbols-outlined">public</span></a>
+                <a class="text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#"><span class="material-symbols-outlined">alternate_email</span></a>
+                <a class="text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#"><span class="material-symbols-outlined">call</span></a>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 text-right">
+            <div class="space-y-3">
+                <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#">Privacy Policy</a>
+                <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#">Terms of Service</a>
+            </div>
+            <div class="space-y-3">
+                <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#">Contact Support</a>
+                <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#">Global Office</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    function toggleDarkMode() {
+        document.documentElement.classList.toggle('dark');
+        const icon = document.getElementById('dark-icon');
+        if (document.documentElement.classList.contains('dark')) {
+            icon.textContent = 'light_mode';
+            localStorage.setItem('theme', 'dark');
+        } else {
+            icon.textContent = 'dark_mode';
+            localStorage.setItem('theme', 'light');
+        }
+    }
+    if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.getElementById('dark-icon').textContent = 'light_mode';
+    }
+    function toggleLoginModal() {
+        const modal = document.getElementById('loginModal');
+        modal.classList.toggle('hidden');
+        modal.classList.toggle('flex');
+    }
+    function handleAdminLogin() {
+        const password = prompt('Contraseña de administrador:');
+        if (password === '12345678') {
+            setTimeout(() => { window.location.href = 'admin.html'; }, 500);
+        } else {
+            alert('Contraseña incorrecta');
+        }
+    }
+    function toggleMobileMenu() {
+        document.getElementById('mobileMenu').classList.toggle('hidden');
+    }
+</script>
+<script type="module" src="src/auth.js"></script>
+<link rel="stylesheet" href="efectos.css">
+<script src="efectos.js" defer></script>
+</body>
+</html>

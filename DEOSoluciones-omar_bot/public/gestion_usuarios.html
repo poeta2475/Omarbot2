@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Gestión de Usuarios | DEOSOLUCIONES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script type="module" src="src/firebase_config.js"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: { "headline": ["Manrope"], "body": ["Inter"], "label": ["Inter"] },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+    <style>
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-black dark:text-white font-body transition-colors duration-300">
+
+<!-- Navbar -->
+<nav class="fixed top-0 w-full z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 shadow-sm transition-colors duration-300">
+    <div class="flex justify-between items-center px-8 py-6 max-w-7xl mx-auto">
+        <a href="index.html" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <img src="images/Logo6fn.png" alt="DEOSOLUCIONES Logo" class="h-12 w-auto md:h-16 lg:h-20 dark:invert">
+            <div class="text-2xl font-black tracking-tighter text-blue-600 font-headline">Panel Admin</div>
+        </a>
+        <div class="hidden md:flex space-x-8 font-headline tracking-tight font-bold text-sm uppercase">
+            <a class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" href="index.html">INICIO</a>
+            <a class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" href="productos.html">PRODUCTOS</a>
+            <a class="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" href="admin.html">DASHBOARD</a>
+            <a class="text-blue-600 border-b-2 border-blue-600 pb-1" href="gestion_usuarios.html">USUARIOS</a>
+        </div>
+        <div class="flex items-center gap-3">
+            <button onclick="toggleDarkMode()" id="btn-dark" class="w-10 h-10 rounded-xl border border-gray-200 dark:border-gray-600 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-all">
+                <span class="material-symbols-outlined text-gray-600 dark:text-gray-300" id="dark-icon">dark_mode</span>
+            </button>
+            <button class="bg-gradient-to-br from-red-500 to-red-600 text-white px-6 py-2 rounded-xl font-headline font-bold text-sm uppercase transition-all hover:opacity-90 active:scale-95" onclick="handleLogout()">
+                Cerrar Sesión
+            </button>
+        </div>
+    </div>
+</nav>
+
+<main class="pt-24 min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-8 py-12">
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4">
+            <div>
+                <span class="text-blue-600 font-label text-xs tracking-[0.3em] uppercase block mb-2">Panel de Administración</span>
+                <h1 class="text-4xl font-headline font-extrabold tracking-tight dark:text-white">Gestión de <span class="text-blue-600">Usuarios</span></h1>
+                <p class="text-gray-600 dark:text-gray-400 mt-2 text-lg">Listado de clientes registrados en la plataforma.</p>
+            </div>
+            <a href="admin.html" class="flex items-center gap-2 bg-white dark:bg-gray-800 px-5 py-3 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-bold">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Volver al Dashboard
+            </a>
+        </div>
+
+        <!-- Tabla -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden transition-colors duration-300">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Nombre</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Correo Electrónico</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Teléfono</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Fecha Registro</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Rol</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usuariosTableBody">
+                        <tr id="loadingRow">
+                            <td colspan="5" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
+                                <div class="flex flex-col items-center gap-3">
+                                    <span class="material-symbols-outlined animate-spin text-4xl text-blue-500">progress_activity</span>
+                                    Cargando usuarios...
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    function toggleDarkMode() {
+        document.documentElement.classList.toggle('dark');
+        const icon = document.getElementById('dark-icon');
+        if (document.documentElement.classList.contains('dark')) {
+            icon.textContent = 'light_mode';
+            localStorage.setItem('theme', 'dark');
+        } else {
+            icon.textContent = 'dark_mode';
+            localStorage.setItem('theme', 'light');
+        }
+    }
+    if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.getElementById('dark-icon').textContent = 'light_mode';
+    }
+</script>
+
+<script type="module" src="src/gestion_usuarios.js"></script>
+<script type="module">
+    import { handleLogout } from './src/auth.js';
+    window.handleLogout = handleLogout;
+</script>
+</body>
+</html>
