@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -12,8 +13,49 @@ const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'deosoluciones_secret_key';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Middlewares
-app.use(cors());
+// ──────────────────────────────────────────
+// SECURITY HEADERS
+// ──────────────────────────────────────────
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc:  ["'self'"],
+      scriptSrc:   ["'self'", "'unsafe-inline'",
+                    "cdn.tailwindcss.com", "unpkg.com",
+                    "www.gstatic.com", "apis.google.com",
+                    "*.firebaseapp.com"],
+      styleSrc:    ["'self'", "'unsafe-inline'",
+                    "fonts.googleapis.com", "unpkg.com"],
+      fontSrc:     ["'self'", "fonts.gstatic.com"],
+      imgSrc:      ["'self'", "data:", "https:"],
+      connectSrc:  ["'self'",
+                    "*.googleapis.com", "*.firebaseio.com",
+                    "*.firebaseapp.com",
+                    "identitytoolkit.googleapis.com",
+                    "securetoken.googleapis.com"],
+      frameSrc:    ["'none'"],
+      objectSrc:   ["'none'"],
+      baseUri:     ["'self'"],
+      formAction:  ["'self'"],
+    }
+  },
+  crossOriginEmbedderPolicy: false,
+}));
+
+// CORS — solo dominio de producción (o localhost en dev)
+const allowedOrigins = [
+  'https://deosoluciones.com',
+  'https://www.deosoluciones.com',
+  ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:3000'] : [])
+];
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) callback(null, true);
+    else callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true
+}));
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
