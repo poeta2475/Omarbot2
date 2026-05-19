@@ -1,0 +1,2 @@
+# Omarbot2
+Copialocal
