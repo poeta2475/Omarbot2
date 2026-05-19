@@ -318,7 +318,7 @@ function obtenerRespuesta(mensaje) {
 
   if (intencionesDectadas.length === 0 || intencionesDectadas[0].score < 10.0) {
     // Fallback con opciones
-    return `🤔 No entendí bien, pero puedo ayudarte con:\n\n🔐 Control d  e acceso → escribe "hikvision"\n🔧 Servicio técnico → escribe "servicio"\n💰 Precios → escribe "precio"\n📍 Ubicación → escribe "ubicacion"\n📞 Contacto → escribe "contacto"\n📋 Dejar datos → escribe "datos"\n\n📱 O escríbenos directo: 324 260 0709`;
+    return `🤔 No entendí bien, pero puedo ayudarte con:\n\n🔐 Control de acceso → escribe "hikvision"\n🔧 Servicio técnico → escribe "servicio"\n💰 Precios → escribe "precio"\n📍 Ubicación → escribe "ubicacion"\n📞 Contacto → escribe "contacto"\n📋 Dejar datos → escribe "datos"\n\n📱 O escríbenos directo: 324 260 0709`;
   }
 
   // Si hay múltiples intenciones de alta relevancia, combinar respuestas

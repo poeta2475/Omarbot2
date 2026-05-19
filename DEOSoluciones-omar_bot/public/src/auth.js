@@ -254,14 +254,11 @@ async function createOrUpdateUserDocument(user) {
 
 async function getUserRole(uid) {
     try {
-        console.log('🔍 Buscando rol para UID:', uid);
         const userDocRef = doc(db, 'usuarios', uid);
         const userDoc = await getDoc(userDocRef);
 
         if (userDoc.exists()) {
             const userData = userDoc.data();
-            console.log('📄 Datos del usuario:', userData);
-            console.log('🎭 Rol del usuario:', userData.rol);
             return userData.rol || 'cliente';
         } else {
             console.log('❌ Documento no existe en Firestore');
@@ -308,7 +305,6 @@ window.handleGoogleLogin = handleGoogleLogin;
 window.handleLogout = handleLogout;
 window.handleEmailLogin = handleEmailLogin;
 window.handleRegister = handleRegister;
-window.handleAdminLogin = handleAdminLogin;
 window.handleAuthFormSubmit = handleAuthFormSubmit;
 
 // --- ESTADO DE SESIÓN ---

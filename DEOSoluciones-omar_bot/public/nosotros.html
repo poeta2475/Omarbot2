@@ -237,7 +237,7 @@
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <div>
             <img src="images/Logo6fn.png" alt="DEOSOLUCIONES Logo" class="h-12 w-auto md:h-14 lg:h-16 mb-4 dark:invert">
-            <p class="font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 mb-6">© 2024 DEOSOLUCIONES. Engineered for Intelligence.</p>
+            <p class="font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 mb-6">© 2026 DEOSOLUCIONES. Engineered for Intelligence.</p>
             <div class="flex gap-4">
                 <a class="text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#"><span class="material-symbols-outlined">public</span></a>
                 <a class="text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#"><span class="material-symbols-outlined">alternate_email</span></a>
@@ -246,12 +246,12 @@
         </div>
         <div class="grid grid-cols-2 gap-4 text-right">
             <div class="space-y-3">
-                <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#">Privacy Policy</a>
-                <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#">Terms of Service</a>
+                <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="servicios.html">Servicios</a>
+                <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="productos.html">Productos</a>
             </div>
             <div class="space-y-3">
-                <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#">Contact Support</a>
-                <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="#">Global Office</a>
+                <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="contacto.html">Contacto</a>
+                <a class="block font-inter text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400 hover:text-blue-600 transition-colors" href="index.html">Soluciones</a>
             </div>
         </div>
     </div>
@@ -278,12 +278,24 @@
         modal.classList.toggle('hidden');
         modal.classList.toggle('flex');
     }
-    function handleAdminLogin() {
+    async function handleAdminLogin() {
         const password = prompt('Contraseña de administrador:');
-        if (password === '12345678') {
-            setTimeout(() => { window.location.href = 'admin.html'; }, 500);
-        } else {
-            alert('Contraseña incorrecta');
+        if (!password) return;
+        try {
+            const res = await fetch('/api/admin-login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                localStorage.setItem('adminToken', data.token);
+                window.location.href = 'admin.html';
+            } else {
+                alert('Contraseña incorrecta');
+            }
+        } catch {
+            alert('Error al conectar con el servidor');
         }
     }
     function toggleMobileMenu() {
