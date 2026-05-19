@@ -80,7 +80,15 @@ if (process.env.FIREBASE_SERVICE_ACCOUNT) {
   try { serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT); }
   catch { throw new Error('FIREBASE_SERVICE_ACCOUNT no es JSON válido'); }
 } else {
-  serviceAccount = require('./deosoluciones-29141-firebase-adminsdk-fbsvc-922ff09da1.json');
+  try {
+    serviceAccount = require('./deosoluciones-29141-firebase-adminsdk-fbsvc-922ff09da1.json');
+  } catch {
+    throw new Error(
+      'Faltan credenciales de Firebase.\n' +
+      'Opción A: Coloca el archivo deosoluciones-29141-firebase-adminsdk-fbsvc-922ff09da1.json en la raíz del proyecto.\n' +
+      'Opción B: Define la variable de entorno FIREBASE_SERVICE_ACCOUNT con el contenido JSON del service account.'
+    );
+  }
 }
 
 if (!admin.apps.length) {
@@ -162,6 +170,8 @@ app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'public', 'adm
 app.get('/nosotros', (req, res) => res.sendFile(path.join(__dirname, 'public', 'nosotros.html')));
 app.get('/productos', (req, res) => res.sendFile(path.join(__dirname, 'public', 'productos.html')));
 app.get('/contacto', (req, res) => res.sendFile(path.join(__dirname, 'public', 'contacto.html')));
+app.get('/servicios', (req, res) => res.sendFile(path.join(__dirname, 'public', 'servicios.html')));
+app.get('/gestion-usuarios', (req, res) => res.sendFile(path.join(__dirname, 'public', 'gestion_usuarios.html')));
 
 // ──────────────────────────────────────────
 // API - Autenticación
