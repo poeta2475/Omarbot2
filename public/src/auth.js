@@ -296,14 +296,7 @@ export async function handleAdminLogin() {
     }
 }
 
-// --- MODAL & FORMULARIO ---
-const _modal = document.getElementById('loginModal');
-if (_modal) {
-    // Cierra al hacer clic directamente sobre el fondo oscuro
-    _modal.addEventListener('click', (e) => {
-        if (e.target === _modal) toggleLoginModal();
-    });
-}
+// --- FORMULARIO DE LOGIN ---
 const _authForm = document.getElementById('authForm');
 if (_authForm) _authForm.addEventListener('submit', handleAuthFormSubmit);
 
