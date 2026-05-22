@@ -121,12 +121,6 @@
                 Google
             </button>
         </div>
-        <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
-            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">¿Eres administrador?</p>
-            <button onclick="handleAdminLogin()" class="px-4 py-2 bg-red-600 text-white text-sm font-bold rounded-lg hover:bg-red-700 transition-colors">
-                Acceso Admin
-            </button>
-        </div>
     </div>
 </div>
 
@@ -339,26 +333,6 @@
         const modal = document.getElementById('loginModal');
         modal.classList.toggle('hidden');
         modal.classList.toggle('flex');
-    }
-    async function handleAdminLogin() {
-        const password = prompt('Contraseña de administrador:');
-        if (!password) return;
-        try {
-            const res = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ password })
-            });
-            if (res.ok) {
-                const data = await res.json();
-                localStorage.setItem('adminToken', data.token);
-                window.location.href = 'admin.html';
-            } else {
-                alert('Contraseña incorrecta');
-            }
-        } catch {
-            alert('Error al conectar con el servidor');
-        }
     }
     function toggleMobileMenu() {
         document.getElementById('mobileMenu').classList.toggle('hidden');

@@ -4,17 +4,12 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 const { Resend } = require('resend');
 const admin = require('firebase-admin');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) throw new Error('JWT_SECRET no definida en variables de entorno');
-if (!process.env.ADMIN_PASSWORD) throw new Error('ADMIN_PASSWORD no definida en variables de entorno');
 if (!process.env.RESEND_API_KEY) throw new Error('RESEND_API_KEY no definida en variables de entorno');
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -119,18 +114,9 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
-let adminPasswordHash = null;
-
 // ──────────────────────────────────────────
 // RATE LIMITING
 // ──────────────────────────────────────────
-const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: 'Demasiados intentos. Intenta en 15 minutos.' }
-});
 const contactoLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 5,
@@ -190,39 +176,8 @@ app.get('/servicios', (req, res) => res.sendFile(path.join(__dirname, 'public', 
 app.get('/gestion-usuarios', (req, res) => res.sendFile(path.join(__dirname, 'public', 'gestion_usuarios.html')));
 
 // ──────────────────────────────────────────
-// API - Autenticación
+// Middleware de autenticación
 // ──────────────────────────────────────────
-app.post('/api/login', loginLimiter, async (req, res) => {
-  const { email, password } = req.body;
-  if (!password) return res.status(400).json({ error: 'Contraseña requerida' });
-  try {
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@deosoluciones.com';
-    if (email && email !== adminEmail) return res.status(401).json({ error: 'Credenciales incorrectas' });
-    if (!adminPasswordHash) return res.status(500).json({ error: 'Servidor no configurado correctamente' });
-    const ok = await bcrypt.compare(password, adminPasswordHash);
-    if (!ok) return res.status(401).json({ error: 'Credenciales incorrectas' });
-    const token = jwt.sign({ email: email || adminEmail, role: 'admin' }, JWT_SECRET, { expiresIn: '8h' });
-    return res.json({ token, message: 'Login exitoso' });
-  } catch (error) {
-    console.error('Error en login:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
-  }
-});
-
-// ──────────────────────────────────────────
-// Middleware JWT
-// ──────────────────────────────────────────
-function verificarToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  if (!token) return res.status(401).json({ error: 'Token requerido' });
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ error: 'Token inválido' });
-    req.user = user;
-    next();
-  });
-}
-
 // Verifica un ID token de Firebase y que el usuario tenga rol de admin en Firestore.
 async function verificarAdminFirebase(req, res, next) {
   const authHeader = req.headers['authorization'];
@@ -447,18 +402,9 @@ app.use((req, res) => {
 // ──────────────────────────────────────────
 // Iniciar servidor
 // ──────────────────────────────────────────
-async function iniciarServidor() {
-  try {
-    adminPasswordHash = await bcrypt.hash(process.env.ADMIN_PASSWORD, 12);
-  } catch (error) {
-    console.error('Error crítico al inicializar:', error);
-    process.exit(1);
-  }
-  app.listen(PORT, () => {
-    console.log(`✅ Servidor DEOSoluciones corriendo en http://localhost:${PORT}`);
-  });
-}
-iniciarServidor();
+app.listen(PORT, () => {
+  console.log(`✅ Servidor DEOSoluciones corriendo en http://localhost:${PORT}`);
+});
 
 process.on('SIGTERM', () => {
   console.log('SIGTERM recibido. Cerrando servidor...');

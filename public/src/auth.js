@@ -280,22 +280,6 @@ export async function handleLogout() {
     }
 }
 
-export async function handleAdminLogin() {
-    const user = auth.currentUser;
-    if (!user) {
-        showNotification('Debes iniciar sesión primero', 'error');
-        return;
-    }
-
-    const role = await getUserRole(user.uid);
-    if (role === 'admin' || role === 'administrador') {
-        showNotification('Acceso admin concedido', 'success');
-        window.location.href = 'admin.html';
-    } else {
-        showNotification('No tienes permisos de administrador', 'error');
-    }
-}
-
 // --- FORMULARIO DE LOGIN ---
 const _authForm = document.getElementById('authForm');
 if (_authForm) _authForm.addEventListener('submit', handleAuthFormSubmit);
