@@ -138,13 +138,52 @@ select:focus-visible, textarea:focus-visible {
 }
 .title-accent.center::after { margin-left: auto; margin-right: auto; }
 
-/* Utilidad: texto con degradado de marca azul → índigo */
+/* Utilidad: texto con degradado de marca azul → índigo (con flujo animado) */
 .text-gradient {
-  background: linear-gradient(120deg, #2563eb, #4f46e5 55%, #06b6d4);
+  background: linear-gradient(120deg, #2563eb, #4f46e5 40%, #06b6d4 60%, #4f46e5 80%, #2563eb);
+  background-size: 220% auto;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
+  animation: hfGradientFlow 7s ease-in-out infinite;
+}
+
+/* ───── HYPERFRAMES — animaciones CSS nativas y ligeras ─────
+   Solo animan transform / opacity / background-position → 60fps, sin JS. */
+@keyframes hfGradientFlow { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+@keyframes hfFloat       { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+@keyframes hfGlow        { 0%,100% { box-shadow: 0 0 0 0 rgba(79,70,229,0.0), 0 8px 24px -8px rgba(37,99,235,0.45); }
+                           50%      { box-shadow: 0 0 24px 2px rgba(79,70,229,0.45), 0 10px 30px -8px rgba(6,182,212,0.45); } }
+@keyframes hfShimmer     { 0% { transform: translateX(-130%) skewX(-18deg); } 60%,100% { transform: translateX(230%) skewX(-18deg); } }
+@keyframes hfAurora      { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+@keyframes hfPulseRing   { 0% { transform: scale(.8); opacity: .6; } 100% { transform: scale(2.2); opacity: 0; } }
+
+/* Flotación suave en bucle (iconos, badges, avatares) */
+.hf-float { animation: hfFloat 4.5s ease-in-out infinite; will-change: transform; }
+.hf-float.slow { animation-duration: 6.5s; }
+
+/* Glow pulsante de marca (CTAs, tarjetas destacadas) */
+.hf-glow { animation: hfGlow 3.2s ease-in-out infinite; }
+
+/* Barrido de brillo tipo máscara — el contenedor debe tener position:relative y overflow:hidden */
+.hf-shimmer { position: relative; overflow: hidden; }
+.hf-shimmer::after {
+  content: ""; position: absolute; top: 0; left: 0; width: 45%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,0.55), transparent);
+  animation: hfShimmer 3.8s ease-in-out infinite; pointer-events: none;
+}
+
+/* Fondo aurora animado (degradado de marca que respira) */
+.hf-aurora {
+  background: linear-gradient(120deg, #1e3a8a, #4f46e5, #0ea5e9, #4f46e5, #1e3a8a);
+  background-size: 300% 300%;
+  animation: hfAurora 14s ease infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-gradient, .hf-float, .hf-glow, .hf-aurora { animation: none !important; }
+  .hf-shimmer::after { display: none; }
 }
 
 /* Elevación suave al pasar el cursor sobre tarjetas con borde redondeado.
