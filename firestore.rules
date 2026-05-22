@@ -23,7 +23,12 @@ service cloud.firestore {
     // Nadie puede borrar desde el cliente.
     match /usuarios/{userId} {
       allow read:   if isOwner(userId) || isAdmin();
-      allow create: if isOwner(userId);
+      // Al crear su propio doc, el usuario NO puede autoasignarse un rol
+      // privilegiado: solo se permite 'cliente' (o sin rol). Los admins
+      // se promueven luego vía Admin SDK / panel de gestión.
+      allow create: if isOwner(userId) &&
+                       (!('rol' in request.resource.data) ||
+                        request.resource.data.rol == 'cliente');
       // El propietario puede actualizar su doc pero NO puede cambiar su propio rol
       allow update: if (isOwner(userId) &&
                         !request.resource.data.diff(resource.data)

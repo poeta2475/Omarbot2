@@ -362,6 +362,12 @@ app.post('/api/contacto', contactoLimiter, async (req, res) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(correo)) return res.status(400).json({ error: 'Correo electrónico no válido' });
   if (!/^[\d\s\+\-\(\)]{7,20}$/.test(telefono)) return res.status(400).json({ error: 'Teléfono no válido' });
+  if (String(nombre).length > 100 || String(motivo).length > 1000 ||
+      String(correo).length > 150 || String(empresa || '').length > 150) {
+    return res.status(400).json({ error: 'Uno de los campos excede la longitud permitida' });
+  }
+  // Evita inyección de cabeceras (CRLF) en el asunto del correo
+  const nombreAsunto = String(nombre).replace(/[\r\n]+/g, ' ').trim();
   try {
     await db.collection('contactos').add({
       nombre, telefono, correo,
@@ -373,7 +379,7 @@ app.post('/api/contacto', contactoLimiter, async (req, res) => {
     await resend.emails.send({
       from: 'onboarding@resend.dev',
       to: emailDestinatarios,
-      subject: `📩 Nuevo contacto de ${nombre} - DEOSOLUCIONES`,
+      subject: `📩 Nuevo contacto de ${nombreAsunto} - DEOSOLUCIONES`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 12px;">
           <div style="background: #0057ff; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
