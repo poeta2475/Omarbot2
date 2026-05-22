@@ -42,6 +42,7 @@ const intenciones = [
   // ── PRIORIDAD 1: URGENCIAS ──
   {
     prioridad: 1,
+    grupo: 'urgente',
     palabras: ['urgente', 'urgencia', 'emergencia', 'rapido rápido', 'ya mismo', 'ahora mismo',
       'hoy mismo', 'es urgente', 'lo mas pronto', 'inmediato', 'se daño ya', 'se cayó el servidor',
       'todo parado', 'cayó el sistema', 'necesito ayuda urgente', 'es una emergencia'],
@@ -51,6 +52,7 @@ const intenciones = [
   // ── PRIORIDAD 1: ASESOR HUMANO ──
   {
     prioridad: 1,
+    grupo: 'urgente',
     palabras: ['asesor', 'humano', 'persona', 'agente', 'quiero hablar con alguien',
       'hablar con una persona', 'no quiero bot', 'atiéndeme', 'atiendeme',
       'necesito ayuda real', 'quiero un asesor', 'me comunicas', 'con quien hablo'],
@@ -60,6 +62,7 @@ const intenciones = [
   // ── PRIORIDAD 1: RECUPERACIÓN DE DATOS ──
   {
     prioridad: 1,
+    grupo: 'rep',
     palabras: ['perdi datos', 'perdí datos', 'se borraron', 'archivos borrados',
       'recuperar datos', 'recuperar archivos', 'formatee sin querer', 'borre todo',
       'disco no abre', 'usb no abre', 'disco dañado', 'perdí todo', 'no reconoce el disco'],
@@ -69,6 +72,7 @@ const intenciones = [
   // ── PRIORIDAD 2: HIKVISION / CONTROL DE ACCESO ──
   {
     prioridad: 2,
+    grupo: 'producto',
     palabras: ['hikvision', 'hik vision', 'reconocimiento facial', 'control de acceso',
       'biometrico', 'biométrico', 'asistencia facial', 'torniquete', 'control personal',
       'face id', 'camara seguridad', 'cámara de seguridad', 'acceso facial',
@@ -79,6 +83,7 @@ const intenciones = [
   // ── PRIORIDAD 2: SERVICIO TÉCNICO ──
   {
     prioridad: 2,
+    grupo: 'rep',
     palabras: ['servicio tecnico', 'servicio técnico', 'reparacion', 'reparación', 'reparar',
       'arreglar', 'dañado', 'no funciona', 'no sirve', 'tecnico', 'técnico',
       'descompuesto', 'falla', 'falla el equipo', 'dejo de funcionar', 'tiene problemas'],
@@ -88,6 +93,7 @@ const intenciones = [
   // ── PRIORIDAD 2: PC / LAPTOP ──
   {
     prioridad: 2,
+    grupo: 'rep',
     palabras: ['computador', 'computadora', 'pc', 'portatil', 'portátil', 'laptop', 'notebook',
       'no prende', 'no enciende', 'lento', 'lenta', 'virus', 'pantalla azul', 'pantalla negra',
       'se congela', 'se traba', 'se apaga', 'bateria', 'batería', 'teclado dañado',
@@ -99,6 +105,7 @@ const intenciones = [
   // ── PRIORIDAD 2: COMPONENTES DE HARDWARE ──
   {
     prioridad: 2,
+    grupo: 'rep',
     palabras: ['ram', 'memoria ram', 'memoria', 'disco duro', 'ssd', 'procesador', 'cpu',
       'tarjeta de video', 'grafica', 'gráfica', 'fuente de poder', 'placa madre',
       'motherboard', 'cambiar ram', 'ampliar memoria', 'cambiar disco', 'actualizar equipo',
@@ -109,6 +116,7 @@ const intenciones = [
   // ── PRIORIDAD 2: SERVIDORES / NAS ──
   {
     prioridad: 2,
+    grupo: 'rep',
     palabras: ['nas', 'qnap', 'synology', 'servidor', 'servidores', 'almacenamiento',
       'backup', 'respaldo', 'nube privada', 'disco en red', 'storage', 'raid',
       'servidor de archivos', 'compartir archivos', 'red interna'],
@@ -118,6 +126,7 @@ const intenciones = [
   // ── PRIORIDAD 2: RED / WIFI / INTERNET ──
   {
     prioridad: 2,
+    grupo: 'rep',
     palabras: ['red', 'wifi', 'internet', 'router', 'enrutador', 'switch', 'cableado',
       'red lenta', 'no hay wifi', 'no conecta', 'red caida', 'red empresarial',
       'configurar red', 'punto de acceso', 'access point', 'vpn', 'fibra optica',
@@ -129,6 +138,7 @@ const intenciones = [
   // ── PRIORIDAD 2: VIRUS / MALWARE / SEGURIDAD ──
   {
     prioridad: 2,
+    grupo: 'rep',
     palabras: ['virus', 'malware', 'ransomware', 'hackearon', 'hackeo', 'me hackearon',
       'spyware', 'troyano', 'encriptaron', 'archivos encriptados', 'piden rescate',
       'antivirus', 'seguridad informatica', 'contraseña robada', 'me robaron datos',
@@ -139,6 +149,7 @@ const intenciones = [
   // ── PRIORIDAD 2: IMPRESORAS ──
   {
     prioridad: 2,
+    grupo: 'rep',
     palabras: ['impresora', 'impresor', 'printer', 'no imprime', 'atasco papel',
       'tinta', 'toner', 'cartucho', 'imprime mal', 'borroso', 'manchas',
       'impresora en red', 'compartir impresora', 'plotter'],
@@ -148,6 +159,7 @@ const intenciones = [
   // ── PRIORIDAD 2: MANTENIMIENTO ──
   {
     prioridad: 2,
+    grupo: 'rep',
     palabras: ['mantenimiento', 'preventivo', 'correctivo', 'limpieza equipo',
       'formatear', 'formato', 'instalar windows', 'windows', 'optimizar',
       'pasta termica', 'pasta térmica', 'limpieza interna', 'actualizacion windows',
@@ -158,6 +170,7 @@ const intenciones = [
   // ── PRIORIDAD 2: PRECIOS ──
   {
     prioridad: 2,
+    grupo: 'comercial',
     palabras: ['precio', 'presio', 'costo', 'cuanto vale', 'cuanto cuesta', 'cuánto cuesta',
       'tarifa', 'cobran', 'cotizacion', 'cotización', 'cotizar', 'presupuesto',
       'cuanto cobran', 'que vale', 'valor', 'cuanto me sale'],
@@ -167,6 +180,7 @@ const intenciones = [
   // ── PRIORIDAD 2: GARANTÍA ──
   {
     prioridad: 2,
+    grupo: 'info',
     palabras: ['garantia', 'garantía', 'garantizan', 'tienen garantia', 'cuanto tiempo garantia',
       'que pasa si vuelve a fallar', 'se daña de nuevo'],
     respuesta: () => `✅ Garantía en Todo\n\n🔧 Servicio técnico: 3 meses\n🛒 Equipos vendidos: 1 año\n🔐 HikVision: 6 meses\n📦 Instalación: 30 días\n🌐 Configuración de red: 30 días\n\nSi el problema regresa dentro del período, lo resolvemos SIN COSTO adicional.\n\n📱 ${TELEFONO}`
@@ -175,6 +189,7 @@ const intenciones = [
   // ── PRIORIDAD 2: DIAGNÓSTICO GRATIS ──
   {
     prioridad: 2,
+    grupo: 'info',
     palabras: ['diagnostico', 'diagnóstico', 'gratis', 'gratuito', 'sin costo',
       'promocion', 'oferta', 'descuento', 'no cobran revisar', 'lo pueden revisar',
       'pueden revisar', 'hay costo por revisar'],
@@ -184,6 +199,7 @@ const intenciones = [
   // ── PRIORIDAD 2: HORARIO ──
   {
     prioridad: 2,
+    grupo: 'info',
     palabras: ['horario', 'hora', 'atienden', 'que dia', 'abren', 'cierran',
       'disponible', 'sabado', 'domingo', 'festivo', 'cuando atienden', 'a que hora'],
     respuesta: () => `🕗 Horario de Atención\n\n📅 Lunes a Viernes\n⏰ 8:00 AM - 5:00 PM\n\n❌ Sábados, domingos y festivos: cerrado\n\n💬 Fuera de horario escríbenos de todas formas — te respondemos al abrir.\n\n📱 ${TELEFONO}`
@@ -192,6 +208,7 @@ const intenciones = [
   // ── PRIORIDAD 2: UBICACIÓN ──
   {
     prioridad: 2,
+    grupo: 'info',
     palabras: ['donde estan', 'donde queda', 'ubicacion', 'ubicación', 'direccion',
       'medellin', 'antioquia', 'valle de aburra', 'domicilio', 'van a mi casa',
       'recogen', 'cobertura', 'llegan a', 'atienden en'],
@@ -201,6 +218,7 @@ const intenciones = [
   // ── PRIORIDAD 2: PAGO ──
   {
     prioridad: 2,
+    grupo: 'info',
     palabras: ['pago', 'pagar', 'efectivo', 'tarjeta', 'transferencia', 'nequi',
       'daviplata', 'bancolombia', 'cuotas', 'formas de pago', 'medios de pago',
       'como pago', 'aceptan tarjeta'],
@@ -210,6 +228,7 @@ const intenciones = [
   // ── PRIORIDAD 2: CONTACTO / WHATSAPP ──
   {
     prioridad: 2,
+    grupo: 'info',
     palabras: ['contacto', 'contactar', 'whatsapp', 'wsp', 'wasap', 'telefono',
       'teléfono', 'numero', 'llamar', 'correo', 'email', 'como los contacto',
       'un numero', 'dame el numero'],
@@ -219,6 +238,7 @@ const intenciones = [
   // ── PRIORIDAD 2: DEJAR DATOS (CRÍTICO — faltaba) ──
   {
     prioridad: 2,
+    grupo: 'info',
     palabras: ['datos', 'mis datos', 'dejar datos', 'dejar mis datos', 'me llaman',
       'llamenme', 'llámenme', 'me contactan', 'quiero que me llamen',
       'quiero que me contacten', 'formulario', 'registrar', 'registrarme'],
@@ -228,6 +248,7 @@ const intenciones = [
   // ── PRIORIDAD 2: COMPRAR EQUIPO ──
   {
     prioridad: 2,
+    grupo: 'comercial',
     palabras: ['quiero comprar', 'venden equipos', 'venta de equipos', 'tienen equipos',
       'tienen computadores', 'precio de un computador', 'donde compro', 'venta',
       'quiero uno', 'quiero un equipo', 'me venden'],
@@ -237,6 +258,7 @@ const intenciones = [
   // ── PRIORIDAD 2: AGENDAR ──
   {
     prioridad: 2,
+    grupo: 'info',
     palabras: ['agendar', 'cita', 'visita', 'cuando pueden venir', 'programar',
       'reservar', 'quiero una cita', 'necesito una visita', 'pueden venir hoy',
       'pueden venir mañana'],
@@ -246,6 +268,7 @@ const intenciones = [
   // ── PRIORIDAD 2: INSTALACIÓN ──
   {
     prioridad: 2,
+    grupo: 'comercial',
     palabras: ['instalacion', 'instalación', 'instalar', 'configurar', 'montar',
       'cablear', 'red empresarial', 'poner', 'configuracion', 'configuración'],
     respuesta: () => `📦 Instalación y Configuración\n\n• 🖥️ Computadores y equipos nuevos\n• 🔐 Sistemas HikVision\n• 🌐 Redes y WiFi empresarial\n• 💾 Servidores y NAS\n• 🔌 Cableado estructurado\n• 🖨️ Impresoras en red\n\n✅ Capacitación incluida\n✅ Garantía 30 días\n\n📱 ${TELEFONO}`
@@ -254,6 +277,7 @@ const intenciones = [
   // ── PRIORIDAD 2: SOBRE LA EMPRESA ──
   {
     prioridad: 2,
+    grupo: 'info',
     palabras: ['quienes son', 'sobre la empresa', 'experiencia', 'son confiables',
       'referencias', 'resenas', 'reseñas', 'son buenos', 'que tal son', 'empresa'],
     respuesta: () => `🏢 Sobre DEOSOLUCIONES\n\nEmpresa de Medellín especializada en:\n→ 🔐 Control de acceso biométrico\n→ 🔧 Servicio técnico profesional\n→ 🌐 Redes e internet empresarial\n→ 🛒 Venta y reparación de equipos\n\n✅ Personal certificado\n✅ Garantía en todo el trabajo\n✅ Diagnóstico siempre GRATIS\n✅ Cobertura Valle de Aburrá\n\n📱 ${TELEFONO}`
@@ -262,6 +286,7 @@ const intenciones = [
   // ── PRIORIDAD 2: SERVICIOS GENERALES / MENÚ ──
   {
     prioridad: 2,
+    grupo: 'info',
     palabras: ['que hacen', 'que ofrecen', 'servicios', 'que son', 'catalogo',
       'portafolio', 'inicio', 'menu', 'menú', 'volver', 'regresar',
       'empezar', 'ayuda', 'opciones', 'que puedes hacer', 'que sabes'],
@@ -271,6 +296,7 @@ const intenciones = [
   // ── PRIORIDAD 3: SALUDOS ──
   {
     prioridad: 3,
+    grupo: 'cortesia',
     palabras: ['hola', 'holaa', 'buenas', 'buenos dias', 'buenas tardes', 'buenas noches',
       'hey', 'saludos', 'que tal', 'ola', 'hi', 'epa', 'quiubo', 'que mas',
       'buenas tardes', 'buen dia', 'good morning', 'como estan'],
@@ -280,6 +306,7 @@ const intenciones = [
   // ── PRIORIDAD 3: DESPEDIDAS ──
   {
     prioridad: 3,
+    grupo: 'cortesia',
     palabras: ['gracias', 'muchas gracias', 'chao', 'adios', 'hasta luego',
       'bye', 'hasta pronto', 'listo gracias', 'ok gracias', 'gracias por todo',
       'fue todo', 'eso era todo'],
@@ -289,6 +316,7 @@ const intenciones = [
   // ── PRIORIDAD 3: AFIRMACIONES ──
   {
     prioridad: 3,
+    grupo: 'cortesia',
     palabras: ['si', 'sí', 'claro', 'dale', 'ok', 'listo', 'perfecto', 'bueno',
       'entendido', 'me interesa', 'chevere', 'excelente', 'genial', 'de acuerdo',
       'con gusto', 'claro que si', 'claro que sí', 'por supuesto'],
@@ -298,6 +326,7 @@ const intenciones = [
   // ── PRIORIDAD 3: NEGACIONES ──
   {
     prioridad: 3,
+    grupo: 'cortesia',
     palabras: ['no gracias', 'no por ahora', 'luego', 'despues', 'después',
       'en otro momento', 'no necesito nada mas', 'ya está', 'ya estuvo'],
     respuesta: () => aleatorio(despedidasVariables)
@@ -372,15 +401,22 @@ function scoreIntención(mensajePalabras, keyword) {
 // ──────────────────────────────────────────
 function detectarIntenciones(mensaje) {
   const norm = normalizar(mensaje);
-  const palabras = norm.split(' ').filter(p => p.length > 2);
+  const todas = norm.split(' ').filter(Boolean);
+  const palabras = todas.filter(p => p.length > 2);
   const resultados = [];
 
   for (const intencion of intenciones) {
     let scoreTotal = 0;
 
-    // Nivel 1: coincidencia exacta de frase
+    // Nivel 1: coincidencia exacta.
+    // - Frases (varias palabras): se buscan como substring.
+    // - Palabras sueltas: deben coincidir como palabra COMPLETA, para evitar
+    //   falsos positivos por substring (ej: "programa" contiene "ram",
+    //   "credito" contiene "red").
     for (const keyword of intencion.palabras) {
-      if (norm.includes(normalizar(keyword))) {
+      const k = normalizar(keyword);
+      const coincide = k.includes(' ') ? norm.includes(k) : todas.includes(k);
+      if (coincide) {
         scoreTotal += SCORE_EXACT_MATCH;
         break;
       }
@@ -428,13 +464,16 @@ function obtenerRespuesta(mensaje) {
   const top     = intencionesDet[0];
   const segunda = intencionesDet[1];
 
-  // Combinar dos intenciones informacionales cuando ambas son relevantes
-  // (independiente de si son la misma prioridad)
+  // Combinar dos respuestas SOLO cuando aportan información complementaria,
+  // es decir, cuando pertenecen a grupos distintos (ej: precio + hikvision,
+  // venta + nas). Si son del mismo grupo (ej: virus + pc) la segunda es
+  // redundante y solo generaría un muro de texto, así que se omite.
   if (
     segunda &&
     segunda.score >= SCORE_SECOND_MIN &&
     top.intencion.prioridad <= 2 &&
-    segunda.intencion.prioridad <= 2
+    segunda.intencion.prioridad <= 2 &&
+    top.intencion.grupo !== segunda.intencion.grupo
   ) {
     return top.intencion.respuesta() + '\n\n─────────────────\n\n' + segunda.intencion.respuesta();
   }
