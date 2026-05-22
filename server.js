@@ -319,6 +319,10 @@ app.delete('/api/productos/:id', verificarToken, async (req, res) => {
 const serviciosTexto = {
   'control-acceso': 'Control de acceso con reconocimiento facial',
   'servicio-tecnico': 'Servicio técnico de equipos',
+  'red-wifi': 'Red / WiFi',
+  'malware': 'Eliminación de malware / virus',
+  'hardware': 'Actualización de hardware (RAM, SSD, etc.)',
+  'impresora': 'Soporte de impresoras',
   'venta-equipos': 'Compra de equipos tecnológicos',
   'instalacion': 'Instalación de equipos',
   'otro': 'Otro'
