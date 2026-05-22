@@ -84,6 +84,19 @@ const intenciones = [
     respuesta: () => `🛠️ Mantenimiento de Equipos\n\n🔍 Preventivo (cada 6 meses):\n→ Limpieza interna\n→ Cambio pasta térmica\n→ Actualización drivers\n→ Optimización del sistema\n\n🔧 Correctivo:\n→ Formateo e instalación Windows\n→ Cambio de piezas\n→ Recuperación de datos\n\n✅ Garantía 3 meses\n💰 Desde $80.000\n\n📱 ${TELEFONO}`
   },
 
+  // ── PRIORIDAD 2: SOFTWARE / PROGRAMAS / APLICACIONES ──
+  {
+    prioridad: 2,
+    grupo: 'rep',
+    palabras: ['software', 'programa', 'programas', 'aplicacion', 'aplicación', 'app',
+      'no abre el programa', 'no abre', 'office', 'word', 'excel', 'powerpoint', 'outlook',
+      'chrome', 'browser', 'navegador', 'instalar programa', 'instalar software',
+      'desinstalar', 'actualizacion programa', 'actualizar programa', 'programa lento',
+      'se cierra solo', 'error al abrir', 'no responde', 'licencia', 'activar windows',
+      'activar office', 'clave de producto', 'pantallazo de error', 'error de aplicacion'],
+    respuesta: () => `💿 Soporte de Software y Programas\n\nSolucionamos:\n• 🚫 Programa que no abre o se cierra solo\n• ⚠️ Errores al abrir aplicaciones\n• 🐢 Programas lentos o que no responden\n• 📥 Instalación y desinstalación de software\n• 🔄 Actualizaciones de programas\n• 🌐 Navegadores (Chrome, Edge, Firefox)\n\nTambién:\n→ Instalación de Office (Word, Excel, PowerPoint)\n→ Activación de Windows y Office\n→ Licencias originales\n→ Configuración de correo y aplicaciones\n\n✅ Diagnóstico GRATIS\n📱 ${TELEFONO}`
+  },
+
   // ── PRIORIDAD 2: PRECIOS ──
   {
     prioridad: 2,
