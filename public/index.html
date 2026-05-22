@@ -143,6 +143,16 @@
   .dark .chat-form-cancel:hover { background: #4b5563; }
   .dark .quick-btn { background: #374151; border-color: #60a5fa; color: #60a5fa; }
   .dark .quick-btn:hover { background: #60a5fa; color: #1f2937; }
+
+  .menu-flotante { display:flex; flex-wrap:wrap; gap:5px; align-self:flex-start; padding-left:35px; animation:msgFadeIn 0.3s ease; margin-top:2px; }
+  .menu-btn { background:#f1f5f9; border:1.5px solid #e2e8f0; color:#475569; border-radius:20px; padding:5px 12px; font-size:10.5px; font-weight:600; cursor:pointer; transition:all 0.18s; font-family:sans-serif; }
+  .menu-btn:hover { background:#e2e8f0; color:#1e293b; transform:translateY(-1px); }
+  .menu-btn.home { border-color:rgba(0,87,255,0.2); color:#0057ff; background:#eff6ff; }
+  .menu-btn.home:hover { background:#0057ff; color:white; }
+  .dark .menu-btn { background:#374151; border-color:#4b5563; color:#d1d5db; }
+  .dark .menu-btn:hover { background:#4b5563; color:white; }
+  .dark .menu-btn.home { background:rgba(59,130,246,0.1); border-color:#3b82f6; color:#60a5fa; }
+  .dark .menu-btn.home:hover { background:#3b82f6; color:white; }
 </style>
 </head>
 <body class="bg-white dark:bg-gray-900 text-black dark:text-white font-body transition-colors duration-300">
@@ -633,6 +643,49 @@
     }, 600);
   }
 
+  function irAlMenu() {
+    agregarMensaje('bot', '¿En qué más te puedo ayudar?');
+    setTimeout(() => agregarBotonesRapidos(['🔐 Control de acceso', '🔧 Servicio técnico', '💰 Precios', '📋 Dejar mis datos']), 400);
+  }
+
+  function mostrarMenuFlotante() {
+    const div = document.createElement('div');
+    div.className = 'menu-flotante';
+    const items = [
+      { label: '🏠 Menú', cls: 'home', fn: () => { div.remove(); irAlMenu(); } },
+      { label: '📋 Dejar datos', cls: '', fn: () => { div.remove(); mostrarTyping(800, () => mostrarFormulario()); } },
+      { label: '💬 WhatsApp', cls: '', fn: () => { div.remove(); abrirWhatsapp(); } }
+    ];
+    items.forEach(({ label, cls, fn }) => {
+      const btn = document.createElement('button');
+      btn.className = 'menu-btn' + (cls ? ' ' + cls : '');
+      btn.textContent = label;
+      btn.onclick = fn;
+      div.appendChild(btn);
+    });
+    mensajesDiv.appendChild(div);
+    mensajesDiv.scrollTop = mensajesDiv.scrollHeight;
+  }
+
+  function abrirWhatsapp() {
+    agregarMensaje('bot', '📱 Puedes escribirnos directamente por WhatsApp:');
+    setTimeout(() => {
+      const wDiv = document.createElement('div');
+      wDiv.className = 'quick-btns';
+      const a = document.createElement('a');
+      a.href = 'https://wa.me/573242600709?text=Hola,%20vengo%20de%20la%20p%C3%A1gina%20web%20de%20DEOSOLUCIONES';
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.className = 'quick-btn';
+      a.style.cssText = 'background:#25D366;color:white;border-color:#25D366;text-decoration:none;';
+      a.textContent = '💬 Abrir WhatsApp';
+      wDiv.appendChild(a);
+      mensajesDiv.appendChild(wDiv);
+      mensajesDiv.scrollTop = mensajesDiv.scrollHeight;
+      setTimeout(() => mostrarMenuFlotante(), 300);
+    }, 400);
+  }
+
   function agregarBotonesRapidos(opciones) {
     const div = document.createElement('div');
     div.className = 'quick-btns';
@@ -667,23 +720,7 @@
     const triggerWhatsapp = ['whatsapp', 'wsp', 'wasap', 'contacto', 'contactar', 'llamar', 'hablar con alguien', 'asesor', 'humano'];
 
     if (triggerWhatsapp.some(t => textoNorm.includes(t))) {
-      mostrarTyping(600, () => {
-        agregarMensaje('bot', '📱 Puedes escribirnos directamente por WhatsApp:');
-        setTimeout(() => {
-          const div = document.createElement('div');
-          div.className = 'quick-btns';
-          const btn = document.createElement('a');
-          btn.href = 'https://wa.me/573242600709?text=Hola,%20vengo%20de%20la%20p%C3%A1gina%20web%20de%20DEOSOLUCIONES';
-          btn.target = '_blank';
-          btn.rel = 'noopener noreferrer';
-          btn.className = 'quick-btn';
-          btn.style.cssText = 'background:#25D366;color:white;border-color:#25D366;text-decoration:none;';
-          btn.textContent = '💬 Abrir WhatsApp';
-          div.appendChild(btn);
-          mensajesDiv.appendChild(div);
-          mensajesDiv.scrollTop = mensajesDiv.scrollHeight;
-        }, 400);
-      });
+      mostrarTyping(600, () => abrirWhatsapp());
       return;
     }
     if (triggerFormulario.some(t => textoNorm.includes(t))) {
@@ -701,15 +738,8 @@
       .then(data => {
         agregarMensaje('bot', data.respuesta);
         const temaDetectado = ['hikvision','servidor','mantenimiento','precio','computador','nas','portatil','wifi','red','malware','virus','ram','ssd','impresora'].find(t => texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(t));
-if (temaDetectado) contexto.ultimoTema = temaDetectado;
-
-        const temasComerciales = ['hikvision', 'control de acceso', 'precio', 'costo', 'cuanto', 'servicio tecnico', 'mantenimiento', 'nas', 'servidor', 'comprar', 'instalar', 'reparar', 'arreglar', 'cotizacion'];
-        if (temasComerciales.some(t => textoNorm.includes(t)) && !esperandoFormulario) {
-          setTimeout(() => {
-            agregarMensaje('bot', '¿Te gustaría que un asesor te contacte con más información?');
-            setTimeout(() => agregarBotonesRapidos(['✅ Sí, dejar mis datos', '❌ No, gracias']), 400);
-          }, 1200);
-        }
+        if (temaDetectado) contexto.ultimoTema = temaDetectado;
+        setTimeout(() => mostrarMenuFlotante(), 300);
       })
       .catch(() => agregarMensaje('bot', '😕 Hubo un error. Contáctanos al 📱 324 260 0709'));
     });
@@ -791,7 +821,7 @@ if (temaDetectado) contexto.ultimoTema = temaDetectado;
         esperandoFormulario = false;
         agregarMensaje('sistema', '✅ Mensaje enviado correctamente');
         agregarMensaje('bot', `¡Gracias ${nombre}! 🎉\n\nRecibimos tu mensaje. Te contactaremos al ${telefono} en menos de 2 horas.\n\n¿Hay algo más en lo que te pueda ayudar?`);
-        setTimeout(() => agregarBotonesRapidos(['🔐 Control de acceso', '🔧 Servicio técnico', '💰 Precios']), 600);
+        setTimeout(() => mostrarMenuFlotante(), 600);
       } else { throw new Error(); }
     } catch {
       btn.disabled = false;
@@ -805,6 +835,7 @@ if (temaDetectado) contexto.ultimoTema = temaDetectado;
     el.closest('.chat-form').remove();
     esperandoFormulario = false;
     agregarMensaje('bot', 'No hay problema. ¿En qué más te puedo ayudar?');
+    setTimeout(() => mostrarMenuFlotante(), 300);
   };
 
   function mostrarTyping(delay, callback) {
