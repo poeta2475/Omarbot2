@@ -126,6 +126,18 @@ select:focus-visible, textarea:focus-visible {
   border-radius: 6px;
 }
 
+/* Barrita-acento bajo títulos de sección (degradado de marca) */
+.title-accent::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 4px;
+  margin-top: 16px;
+  border-radius: 999px;
+  background: linear-gradient(120deg, #2563eb, #4f46e5 60%, #06b6d4);
+}
+.title-accent.center::after { margin-left: auto; margin-right: auto; }
+
 /* Utilidad: texto con degradado de marca azul → índigo */
 .text-gradient {
   background: linear-gradient(120deg, #2563eb, #4f46e5 55%, #06b6d4);
