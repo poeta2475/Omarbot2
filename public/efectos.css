@@ -82,3 +82,87 @@
 .dark #btn-subir:hover {
   background: #0057ff;
 }
+
+/* ════════════════════════════════════════
+   PULIDO GLOBAL — refinamiento visual
+   ════════════════════════════════════════ */
+
+/* Render tipográfico más nítido y scroll suave */
+html { scroll-behavior: smooth; }
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Selección de texto con color de marca */
+::selection { background: rgba(79, 70, 229, 0.22); }
+
+/* Scrollbar de página refinada */
+html { scrollbar-width: thin; scrollbar-color: #c7d2fe transparent; }
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #93c5fd, #818cf8);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #60a5fa, #6366f1);
+  background-clip: content-box;
+}
+.dark html { scrollbar-color: #4338ca transparent; }
+.dark ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #3b82f6, #6366f1);
+  background-clip: content-box;
+}
+
+/* Foco accesible y consistente para teclado */
+a:focus-visible, button:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Utilidad: texto con degradado de marca azul → índigo */
+.text-gradient {
+  background: linear-gradient(120deg, #2563eb, #4f46e5 55%, #06b6d4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Elevación suave al pasar el cursor sobre tarjetas con borde redondeado.
+   Se aplica de forma amplia pero solo añade profundidad, nada disruptivo. */
+.rounded-xl, .rounded-2xl, .rounded-3xl { transition: transform .35s cubic-bezier(.2,.7,.3,1), box-shadow .35s ease; }
+[data-aos].rounded-xl:hover,
+[data-aos].rounded-2xl:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 48px -16px rgba(30, 58, 138, 0.28),
+              0 8px 18px -10px rgba(79, 70, 229, 0.22);
+}
+.dark [data-aos].rounded-xl:hover,
+.dark [data-aos].rounded-2xl:hover {
+  box-shadow: 0 22px 48px -16px rgba(0, 0, 0, 0.55),
+              0 0 0 1px rgba(99, 102, 241, 0.25);
+}
+
+/* Brillo de marca en botones gradientes (clase ya presente en la home) */
+.btn-primary-hero {
+  box-shadow: 0 10px 30px -10px rgba(37, 99, 235, 0.55);
+}
+.btn-primary-hero:hover {
+  box-shadow: 0 16px 40px -12px rgba(79, 70, 229, 0.65);
+}
+
+/* Imágenes de tarjeta: realce sutil al hover del contenedor */
+.group:hover img { filter: saturate(1.06); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .rounded-xl, .rounded-2xl, .rounded-3xl { transition: none; }
+  [data-aos].rounded-xl:hover, [data-aos].rounded-2xl:hover { transform: none; }
+}

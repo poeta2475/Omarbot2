@@ -81,7 +81,7 @@
       <button onclick="toggleDarkMode()" id="btn-dark" aria-label="Cambiar modo oscuro" class="w-10 h-10 rounded-xl border border-gray-200 dark:border-gray-600 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-all">
         <span class="material-symbols-outlined text-gray-600 dark:text-gray-300" id="dark-icon">dark_mode</span>
       </button>
-      <button class="hidden md:block bg-gradient-to-br from-blue-500 to-blue-600 text-white px-6 py-2 rounded-xl font-headline font-bold text-sm uppercase transition-all hover:opacity-90 active:scale-95 btn-login-trigger" onclick="toggleLoginModal()">
+      <button class="hidden md:block bg-gradient-to-br from-blue-500 to-indigo-600 text-white px-6 py-2 rounded-xl font-headline font-bold text-sm uppercase transition-all hover:opacity-90 active:scale-95 btn-login-trigger" onclick="toggleLoginModal()">
         LOGIN
       </button>
       <button onclick="toggleMobileMenu()" class="md:hidden w-9 h-9 rounded-xl border border-gray-200 dark:border-gray-600 flex items-center justify-center">
@@ -152,8 +152,9 @@
 <!-- Hero con Carrusel -->
 <section class="relative min-h-screen flex flex-col pt-24 overflow-hidden px-8" id="solutions">
   <div class="absolute inset-0 opacity-20 pointer-events-none">
-    <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-blue-500 rounded-full blur-[120px] blob-anim"></div>
-    <div class="absolute bottom-[20%] left-[-5%] w-[400px] h-[400px] bg-blue-300 rounded-full blur-[100px] blob-anim-2"></div>
+    <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-blue-500 rounded-full blur-[120px] blob-anim opacity-70"></div>
+    <div class="absolute bottom-[20%] left-[-5%] w-[450px] h-[450px] bg-indigo-400 rounded-full blur-[110px] blob-anim-2 opacity-60"></div>
+    <div class="absolute top-[30%] left-[35%] w-[350px] h-[350px] bg-cyan-300 rounded-full blur-[130px] blob-anim opacity-40"></div>
   </div>
 
   <!-- Carrusel -->
@@ -223,13 +224,13 @@
         Soluciones TI para PyMEs · Medellín
       </span>
       <h1 class="hero-fade delay-1 text-5xl md:text-8xl font-headline font-extrabold tracking-tighter leading-tight">
-        DEO<span class="text-blue-600">SOLUCIONES</span>
+        DEO<span class="text-gradient">SOLUCIONES</span>
       </h1>
       <p class="hero-fade delay-2 text-xl md:text-2xl text-gray-600 dark:text-gray-300 font-light leading-relaxed">
         Transformamos retos en soluciones. Control de asistencia biométrico de alta precisión diseñado para el futuro de las PyMEs.
       </p>
       <div class="hero-fade delay-3 flex flex-wrap gap-4 pt-4">
-        <a href="contacto.html" class="btn-primary-hero px-8 py-4 bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold rounded-xl shadow-lg active:scale-95">
+        <a href="contacto.html" class="btn-primary-hero px-8 py-4 bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-bold rounded-xl shadow-lg active:scale-95">
           Comenzar ahora
         </a>
         <a href="servicios.html" class="px-8 py-4 border border-gray-300 dark:border-gray-600 text-black dark:text-white font-bold rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all active:scale-95 flex items-center gap-2">

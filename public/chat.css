@@ -7,13 +7,13 @@
 @keyframes bounce { 0%,60%,100% { transform:translateY(0); } 30% { transform:translateY(-6px); } }
 @keyframes chatPulse { 0%,100% { box-shadow:0 4px 20px rgba(0,87,255,0.5); } 50% { box-shadow:0 4px 30px rgba(0,87,255,0.7),0 0 0 10px rgba(0,87,255,0.08); } }
 
-#chat-btn { position:fixed; bottom:30px; right:30px; width:60px; height:60px; background:linear-gradient(135deg,#0057ff,#0040cc); border-radius:50%; border:none; cursor:pointer; font-size:26px; z-index:9998; transition:transform 0.2s; animation:chatPulse 2.5s ease-in-out infinite; display:flex; align-items:center; justify-content:center; }
-#chat-btn:hover { transform:scale(1.1); animation:none; box-shadow:0 6px 25px rgba(0,87,255,0.6); }
+#chat-btn { position:fixed; bottom:30px; right:30px; width:60px; height:60px; background:linear-gradient(135deg,#2563eb,#4f46e5); border-radius:50%; border:none; cursor:pointer; font-size:26px; z-index:9998; transition:transform 0.2s,box-shadow 0.2s; animation:chatPulse 2.5s ease-in-out infinite; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 24px -6px rgba(79,70,229,0.5); }
+#chat-btn:hover { transform:scale(1.1); animation:none; box-shadow:0 10px 30px -6px rgba(79,70,229,0.7); }
 
 #chat-box { display:none; position:fixed; bottom:104px; right:14px; width:min(380px,calc(100vw - 24px)); height:min(560px,calc(100vh - 130px)); background:#fff; border-radius:24px; box-shadow:0 20px 60px rgba(0,0,0,0.18),0 4px 16px rgba(0,0,0,0.08); flex-direction:column; z-index:9999; overflow:hidden; transition:opacity 0.2s,transform 0.2s; }
 #chat-box.abierto { display:flex; }
 
-#chat-header { background:linear-gradient(135deg,#0057ff 0%,#003dcc 100%); color:white; padding:14px 16px; display:flex; align-items:center; gap:12px; font-family:sans-serif; }
+#chat-header { background:linear-gradient(135deg,#2563eb 0%,#4f46e5 100%); color:white; padding:14px 16px; display:flex; align-items:center; gap:12px; font-family:sans-serif; }
 .chat-avatar { width:42px; height:42px; border-radius:50%; background:rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.3); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
 #chat-header .info { flex:1; min-width:0; }
 #chat-header .nombre { font-weight:700; font-size:14px; letter-spacing:0.2px; }
