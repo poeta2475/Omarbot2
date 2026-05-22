@@ -295,7 +295,11 @@
   window.deleteProduct = async function(docId) {
     if (confirm('¿Estás seguro de eliminar este producto?')) {
       try {
-        const response = await fetch(`/api/productos/${docId}`, { method: 'DELETE' });
+        const token = await window.getAdminToken();
+        const response = await fetch(`/api/productos/${docId}`, {
+          method: 'DELETE',
+          headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+        });
         if (!response.ok) throw new Error('Error al eliminar');
         showNotification('Producto eliminado', 'success');
         await loadProducts();
@@ -350,8 +354,13 @@
     const method = editingDocId ? 'PUT' : 'POST';
     try {
       showNotification(editingDocId ? 'Actualizando...' : 'Guardando...', 'info');
+      const token = await window.getAdminToken();
       const response = await fetch(url, {
-        method, headers: { 'Content-Type': 'application/json' },
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': 'Bearer ' + token } : {})
+        },
         body: JSON.stringify(productData)
       });
       if (!response.ok) throw new Error((await response.json()).error || 'Error en el servidor');
@@ -428,7 +437,7 @@
 </script>
 
 <script type="module">
-  import { auth, signOut, onAuthStateChanged } from './src/firebase_config.js';
+  import { auth, signOut, onAuthStateChanged, db, doc, getDoc } from './src/firebase_config.js';
   async function handleLogout() {
     try {
       await signOut(auth);
@@ -438,8 +447,21 @@
       showNotification('Error: ' + error.message, 'error');
     }
   }
-  onAuthStateChanged(auth, (user) => {
-    if (!user) window.location.href = 'index.html';
+  // Token de Firebase del usuario actual (para autorizar las operaciones del panel).
+  window.getAdminToken = () => auth.currentUser ? auth.currentUser.getIdToken() : Promise.resolve(null);
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { window.location.href = 'index.html'; return; }
+    // Verificar que el usuario realmente tenga rol de administrador.
+    try {
+      const snap = await getDoc(doc(db, 'usuarios', user.uid));
+      const rol = snap.exists() ? snap.data().rol : null;
+      if (rol !== 'admin' && rol !== 'administrador') {
+        window.location.href = 'index.html';
+      }
+    } catch {
+      window.location.href = 'index.html';
+    }
   });
   window.handleLogout = handleLogout;
 </script>

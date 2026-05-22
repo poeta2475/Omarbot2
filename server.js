@@ -223,6 +223,25 @@ function verificarToken(req, res, next) {
   });
 }
 
+// Verifica un ID token de Firebase y que el usuario tenga rol de admin en Firestore.
+async function verificarAdminFirebase(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const idToken = authHeader && authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+  if (!idToken) return res.status(401).json({ error: 'Token requerido' });
+  try {
+    const decoded = await admin.auth().verifyIdToken(idToken);
+    const userDoc = await db.collection('usuarios').doc(decoded.uid).get();
+    const rol = userDoc.exists ? userDoc.data().rol : null;
+    if (rol !== 'admin' && rol !== 'administrador') {
+      return res.status(403).json({ error: 'Requiere permisos de administrador' });
+    }
+    req.user = { uid: decoded.uid, email: decoded.email, rol };
+    next();
+  } catch {
+    return res.status(403).json({ error: 'Token inválido o expirado' });
+  }
+}
+
 // ──────────────────────────────────────────
 // API - PRODUCTOS (CRUD completo con Firebase)
 // ──────────────────────────────────────────
@@ -259,7 +278,7 @@ app.get('/api/productos', async (req, res) => {
 });
 
 // Agregar producto
-app.post('/api/productos', verificarToken, async (req, res) => {
+app.post('/api/productos', verificarAdminFirebase, async (req, res) => {
   try {
     const nuevoProducto = sanitizarProducto(req.body);
     if (!nuevoProducto.nombre) return res.status(400).json({ error: 'El nombre es requerido' });
@@ -281,7 +300,7 @@ app.post('/api/productos', verificarToken, async (req, res) => {
 });
 
 // Actualizar producto
-app.put('/api/productos/:id', verificarToken, async (req, res) => {
+app.put('/api/productos/:id', verificarAdminFirebase, async (req, res) => {
   try {
     const { id } = req.params;
     const datosActualizados = sanitizarProducto(req.body);
@@ -299,7 +318,7 @@ app.put('/api/productos/:id', verificarToken, async (req, res) => {
 });
 
 // Eliminar producto
-app.delete('/api/productos/:id', verificarToken, async (req, res) => {
+app.delete('/api/productos/:id', verificarAdminFirebase, async (req, res) => {
   try {
     const { id } = req.params;
     const docRef = db.collection('productos').doc(id);
