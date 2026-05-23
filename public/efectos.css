@@ -93,7 +93,20 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  font-kerning: normal;
 }
+
+/* Refinamiento tipográfico (estilo Impeccable):
+   - títulos: balanceo de líneas para cortes naturales
+   - párrafos: evita palabras huérfanas al final
+   - interlineado y ancho de medida cómodos SOLO donde no hay utilidad Tailwind
+   (las clases leading-* y max-w-* de Tailwind tienen prioridad y se respetan) */
+h1, h2, h3, h4 { text-wrap: balance; }
+p, li { text-wrap: pretty; }
+p { line-height: 1.7; }
+/* Utilidad opcional: medida de lectura ideal (~68 caracteres) para párrafos largos */
+.measure { max-width: 68ch; }
 
 /* Selección de texto con color de marca */
 ::selection { background: rgba(79, 70, 229, 0.22); }
