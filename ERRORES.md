@@ -6,6 +6,31 @@ arriba del todo cada vez que resuelvas un error.
 
 ---
 
+## 2026-05-23 — Login con Google roto por CSP `frame-src 'none'`
+
+**Síntomas**
+- Al pulsar "Continuar con Google" el popup no completaba el inicio de sesión
+  (se quedaba colgado o fallaba silenciosamente).
+
+**Causa raíz**
+Firebase Auth (`signInWithPopup`) carga un iframe oculto del dominio de
+autenticación (`*.firebaseapp.com`) y de Google para la comunicación segura
+entre ventanas. La directiva CSP `frame-src 'none'` bloqueaba ese iframe.
+Es el mismo tipo de error que el de los `onclick`: la política de seguridad
+impedía algo que el código necesitaba.
+
+**Solución** (`server.js`, CSP)
+Cambiar `frameSrc: ["'none'"]` por
+`["'self'", "*.firebaseapp.com", "accounts.google.com", "apis.google.com"]`.
+
+**Hallazgo relacionado (pendiente de decisión, NO es un bug de código)**
+El correo de contacto usa `from: 'onboarding@resend.dev'` (remitente sandbox de
+Resend). En producción Resend solo entrega a la dirección verificada de la
+cuenta. Para enviar a destinatarios reales hay que verificar un dominio propio
+en Resend y cambiar el `from`.
+
+---
+
 ## 2026-05-23 — Botones inertes: modo oscuro, login y cierre de modal no funcionaban
 
 **Síntomas**

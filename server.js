@@ -35,7 +35,10 @@ app.use(helmet({
                     "*.firebaseapp.com", "www.gstatic.com",
                     "identitytoolkit.googleapis.com",
                     "securetoken.googleapis.com"],
-      frameSrc:    ["'none'"],
+      // Firebase Auth (signInWithPopup) carga un iframe del dominio de auth y de Google.
+      // Con 'none' el login de Google se rompe.
+      frameSrc:    ["'self'", "*.firebaseapp.com",
+                    "accounts.google.com", "apis.google.com"],
       objectSrc:   ["'none'"],
       baseUri:     ["'self'"],
       formAction:  ["'self'"],
