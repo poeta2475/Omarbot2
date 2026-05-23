@@ -162,6 +162,12 @@ const emailDestinatarios = process.env.CONTACT_EMAIL_TO
   ? process.env.CONTACT_EMAIL_TO.split(',').map(e => e.trim())
   : ['omarsena2475@gmail.com'];
 
+// Remitente de los correos. En producción debe ser una dirección de un dominio
+// verificado en Resend (ej: contacto@deosoluciones.com). El valor por defecto
+// 'onboarding@resend.dev' es el sandbox de Resend: solo entrega al correo de la
+// cuenta y NO sirve para enviar a destinatarios reales.
+const emailRemitente = process.env.CONTACT_EMAIL_FROM || 'onboarding@resend.dev';
+
 // ──────────────────────────────────────────
 // API - Health check
 // ──────────────────────────────────────────
@@ -337,7 +343,7 @@ app.post('/api/contacto', contactoLimiter, async (req, res) => {
     });
 
     await resend.emails.send({
-      from: 'onboarding@resend.dev',
+      from: emailRemitente,
       to: emailDestinatarios,
       subject: `📩 Nuevo contacto de ${nombreAsunto} - DEOSOLUCIONES`,
       html: `
