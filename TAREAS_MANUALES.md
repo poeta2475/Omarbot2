@@ -23,12 +23,16 @@ En tu plataforma de hosting (Railway, Render, VPS, etc.) debes configurar estas 
 | Variable | Descripción |
 |----------|-------------|
 | `NODE_ENV` | Poner `production` |
-| `ADMIN_EMAIL` | Email del administrador. Ej: `admin@deosoluciones.com` |
-| `ADMIN_PASSWORD` | Contraseña segura (mín. 16 caracteres, con números y símbolos) |
-| `JWT_SECRET` | Cadena aleatoria larga (mín. 32 caracteres). Generar con: `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"` |
+| `PORT` | Puerto del servidor (por defecto `3000`) |
 | `RESEND_API_KEY` | Tu clave de Resend. Ej: `re_XXXXXXXXXXXXXXXX` |
 | `CONTACT_EMAIL_TO` | Correos que reciben los contactos. Ej: `omarsena2475@gmail.com,asesor@deosoluciones.com` |
+| `CONTACT_EMAIL_FROM` | Remitente de los correos (dominio verificado en Resend, ver tarea #4) |
+| `CORS_ORIGIN` | (Opcional) dominios extra permitidos, separados por coma |
 | `FIREBASE_SERVICE_ACCOUNT` | Contenido completo del JSON del service account (ver tarea #3) |
+
+> **El acceso de administrador NO usa variables de entorno.** Se gestiona con
+> Firebase Auth + el campo `rol = 'admin'` en la colección `usuarios` de
+> Firestore (ver tarea #6).
 
 ---
 
@@ -59,16 +63,14 @@ Actualmente los correos salen de `onboarding@resend.dev` (dominio de prueba de R
 3. Agregar los registros DNS que indica Resend en tu proveedor de dominio (Namecheap, GoDaddy, Cloudflare, etc.)
 4. Esperar verificación (puede tardar hasta 48 horas)
 
-**Paso 2 — Cambiar el remitente en el código:**
+**Paso 2 — Configurar el remitente (vía variable de entorno):**
 
-En `server.js`, línea ~291, cambiar:
-```javascript
-// ANTES
-from: 'onboarding@resend.dev',
-
-// DESPUÉS
-from: 'DEOSOLUCIONES <noreply@deosoluciones.com>',
+Ya NO se edita el código. Define la variable de entorno con tu dominio verificado:
+```bash
+CONTACT_EMAIL_FROM=DEOSOLUCIONES <noreply@deosoluciones.com>
 ```
+Si no se define, el servidor usa `onboarding@resend.dev` (sandbox de Resend, que
+solo entrega al correo de tu propia cuenta).
 
 ---
 
@@ -97,17 +99,21 @@ por tu Site Key real.
 
 ---
 
-## 6. Contraseña admin: verificar que sea fuerte
+## 6. Asignar el rol de administrador (Obligatorio para usar el panel)
 
-La contraseña en `ADMIN_PASSWORD` debe cumplir:
-- Mínimo 16 caracteres
-- Letras mayúsculas, minúsculas, números y símbolos
-- No usarla en ningún otro sitio
+El acceso al panel `/admin` y `/gestion-usuarios` se controla con el campo `rol`
+del documento del usuario en Firestore. No hay contraseña de admin en variables.
 
-Generar una segura:
-```bash
-node -e "console.log(require('crypto').randomBytes(24).toString('base64'))"
-```
+**Pasos:**
+1. Inicia sesión en el sitio (con Google o email) para que se cree tu documento
+   en la colección `usuarios`.
+2. Ve a **Firebase Console → Firestore Database → colección `usuarios`**.
+3. Abre el documento cuyo `correo` sea el tuyo.
+4. Cambia el campo `rol` de `cliente` a **`admin`**.
+5. Vuelve a iniciar sesión en el sitio: ahora tendrás acceso al panel.
+
+> Por seguridad, las reglas de Firestore impiden que un usuario se autoasigne el
+> rol `admin` desde el navegador: solo puede hacerse manualmente aquí o vía Admin SDK.
 
 ---
 
@@ -116,5 +122,6 @@ node -e "console.log(require('crypto').randomBytes(24).toString('base64'))"
 1. ✅ Variables de entorno en el servidor de producción
 2. ✅ Desplegar reglas de Firestore: `firebase deploy --only firestore:rules`
 3. ✅ Rotar Service Account si estuvo en git
-4. ✅ Verificar dominio en Resend → cambiar `from` en server.js
+4. ✅ Verificar dominio en Resend → definir `CONTACT_EMAIL_FROM`
 5. ✅ Agregar Site Key de reCAPTCHA en firebase_config.js → activar App Check
+6. ✅ Asignar `rol = 'admin'` a tu usuario en Firestore
