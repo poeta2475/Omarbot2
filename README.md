@@ -13,7 +13,7 @@
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://gitea.tu-servidor.com/poeta2475/Omarbot2.git
+git clone https://github.com/poeta2475/Omarbot2.git
 cd Omarbot2
 ```
 
@@ -33,17 +33,16 @@ Abre el archivo `.env` y llena los valores:
 
 | Variable | Qué poner |
 |----------|-----------|
-| `NODE_ENV` | `development` (en tu PC) |
-| `ADMIN_EMAIL` | Tu correo de admin |
-| `ADMIN_PASSWORD` | Contraseña segura (mín. 16 caracteres) |
-| `JWT_SECRET` | Cadena aleatoria larga — generar con el comando de abajo |
+| `NODE_ENV` | `development` (en tu PC) / `production` (en el servidor) |
+| `PORT` | Puerto del servidor (por defecto `3000`) |
 | `RESEND_API_KEY` | Tu clave de Resend |
 | `CONTACT_EMAIL_TO` | Correo donde llegan los contactos |
+| `CONTACT_EMAIL_FROM` | Remitente de los correos (dominio verificado en Resend) |
+| `CORS_ORIGIN` | (Opcional) dominios extra permitidos, separados por coma |
 
-**Generar JWT_SECRET:**
-```bash
-node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
-```
+> **Acceso de administrador:** no se configura por variables de entorno. Se
+> gestiona con **Firebase Auth** + el campo `rol` (`admin`) en la colección
+> `usuarios` de Firestore. Ver `TAREAS_MANUALES.md`.
 
 ### 4. Agregar credenciales de Firebase
 
@@ -120,7 +119,8 @@ firebase deploy --only firestore:rules
 
 | Error | Causa | Solución |
 |-------|-------|----------|
-| `JWT_SECRET no definida` | Falta el `.env` | Crear `.env` desde `.env.example` |
+| `RESEND_API_KEY no definida` | Falta el `.env` o la clave | Crear `.env` desde `.env.example` y poner la clave de Resend |
 | `Faltan credenciales de Firebase` | JSON de service account no encontrado | Ver paso 4 |
+| El correo de contacto no llega | `CONTACT_EMAIL_FROM` sin dominio verificado en Resend | Verificar dominio en Resend y ponerlo en `CONTACT_EMAIL_FROM` |
 | CORS error en el navegador | `NODE_ENV=production` en local | Cambiar a `NODE_ENV=development` en `.env` |
 | Puerto 3000 ocupado | Otro proceso usa ese puerto | Cambiar `PORT=3001` en `.env` |
