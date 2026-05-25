@@ -25,8 +25,8 @@ app.use(helmet({
                     "www.gstatic.com", "apis.google.com",
                     "*.firebaseapp.com",
                     "www.google.com"],
-      // Permite manejadores de eventos inline (onclick, onchange, etc.) usados en el HTML
-      scriptSrcAttr: ["'unsafe-inline'"],
+      // scriptSrcAttr queda en 'none' (default de Helmet): ya no hay manejadores
+      // inline (onclick, etc.) — todos migrados a delegación en src/ui-common.js.
       styleSrc:    ["'self'", "'unsafe-inline'",
                     "fonts.googleapis.com", "unpkg.com"],
       fontSrc:     ["'self'", "fonts.gstatic.com"],

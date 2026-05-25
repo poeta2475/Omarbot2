@@ -212,8 +212,8 @@
           <option value="comprar-equipo">🛒 Quiero comprar un equipo</option>
           <option value="otro">Otro</option>
         </select>
-        <button class="chat-form-btn" id="cf-enviar" onclick="enviarFormularioChat()">Enviar mensaje 📩</button>
-        <button class="chat-form-cancel" onclick="cancelarFormulario(this)">Cancelar</button>
+        <button class="chat-form-btn" id="cf-enviar" data-action="chat-send">Enviar mensaje 📩</button>
+        <button class="chat-form-cancel" data-action="chat-cancel">Cancelar</button>
       `;
       mensajesDiv.appendChild(form);
       mensajesDiv.scrollTop = mensajesDiv.scrollHeight;

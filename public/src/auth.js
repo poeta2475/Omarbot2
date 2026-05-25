@@ -65,7 +65,7 @@ export function showNotification(message, type = 'info') {
             <div class="flex-1 py-3 pr-3">
                 <p class="text-gray-800 font-medium text-sm leading-relaxed deo-notif-msg"></p>
             </div>
-            <button class="self-start mt-2 mr-2 p-1 hover:bg-gray-100 rounded-full transition-colors" onclick="this.closest('.deo-notification').remove()">
+            <button class="self-start mt-2 mr-2 p-1 hover:bg-gray-100 rounded-full transition-colors" data-action="notif-close">
                 <span class="material-symbols-outlined text-gray-400 text-lg hover:text-gray-600">close</span>
             </button>
         </div>

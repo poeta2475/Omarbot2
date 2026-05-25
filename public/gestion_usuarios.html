@@ -39,10 +39,10 @@
             <a class="text-blue-600 border-b-2 border-blue-600 pb-1" href="gestion_usuarios.html">USUARIOS</a>
         </div>
         <div class="flex items-center gap-3">
-            <button onclick="toggleDarkMode()" id="btn-dark" class="w-10 h-10 rounded-xl border border-gray-200 dark:border-gray-600 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-all">
+            <button data-action="dark-toggle" id="btn-dark" class="w-10 h-10 rounded-xl border border-gray-200 dark:border-gray-600 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-all">
                 <span class="material-symbols-outlined text-gray-600 dark:text-gray-300" id="dark-icon">dark_mode</span>
             </button>
-            <button class="bg-gradient-to-br from-red-500 to-red-600 text-white px-6 py-2 rounded-xl font-headline font-bold text-sm uppercase transition-all hover:opacity-90 active:scale-95" onclick="handleLogout()">
+            <button class="bg-gradient-to-br from-red-500 to-red-600 text-white px-6 py-2 rounded-xl font-headline font-bold text-sm uppercase transition-all hover:opacity-90 active:scale-95" data-action="logout">
                 Cerrar Sesión
             </button>
         </div>
@@ -112,6 +112,7 @@
     }
 </script>
 
+<script src="src/ui-common.js" defer></script>
 <script type="module" src="src/gestion_usuarios.js"></script>
 <script type="module">
     import { handleLogout } from './src/auth.js';
