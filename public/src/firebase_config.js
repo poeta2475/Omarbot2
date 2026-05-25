@@ -28,6 +28,8 @@ const app = initializeApp(firebaseConfig);
 //   2. Google Cloud Console → reCAPTCHA → crear sitio v3 → copiar Site Key
 //   3. Reemplazar 'REEMPLAZAR_CON_SITE_KEY_RECAPTCHA_V3' con esa clave
 //   4. Firebase console → App Check → Enforce para Firestore y Auth
+// NOTA: el CSP en server.js ya incluye los dominios de reCAPTCHA (www.google.com,
+// www.gstatic.com). Ver TAREAS_MANUALES.md, tarea #5, para el detalle completo.
 const RECAPTCHA_SITE_KEY = 'REEMPLAZAR_CON_SITE_KEY_RECAPTCHA_V3';
 if (RECAPTCHA_SITE_KEY !== 'REEMPLAZAR_CON_SITE_KEY_RECAPTCHA_V3') {
   initializeAppCheck(app, {

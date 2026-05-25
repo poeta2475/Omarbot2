@@ -23,7 +23,8 @@ app.use(helmet({
       scriptSrc:   ["'self'", "'unsafe-inline'",
                     "cdn.tailwindcss.com", "unpkg.com",
                     "www.gstatic.com", "apis.google.com",
-                    "*.firebaseapp.com"],
+                    "*.firebaseapp.com",
+                    "www.google.com"],
       // Permite manejadores de eventos inline (onclick, onchange, etc.) usados en el HTML
       scriptSrcAttr: ["'unsafe-inline'"],
       styleSrc:    ["'self'", "'unsafe-inline'",
@@ -34,11 +35,13 @@ app.use(helmet({
                     "*.googleapis.com", "*.firebaseio.com",
                     "*.firebaseapp.com", "www.gstatic.com",
                     "identitytoolkit.googleapis.com",
-                    "securetoken.googleapis.com"],
+                    "securetoken.googleapis.com",
+                    "www.google.com"],
       // Firebase Auth (signInWithPopup) carga un iframe del dominio de auth y de Google.
-      // Con 'none' el login de Google se rompe.
+      // www.google.com es necesario para Firebase App Check (reCAPTCHA v3).
       frameSrc:    ["'self'", "*.firebaseapp.com",
-                    "accounts.google.com", "apis.google.com"],
+                    "accounts.google.com", "apis.google.com",
+                    "www.google.com"],
       objectSrc:   ["'none'"],
       baseUri:     ["'self'"],
       formAction:  ["'self'"],

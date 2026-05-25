@@ -6,6 +6,28 @@ arriba del todo cada vez que resuelvas un error.
 
 ---
 
+## 2026-05-25 — Auditoría de seguridad: vulnerabilidades de dependencias (sin fix seguro)
+
+**Hallazgo**
+`npm audit` reporta 8 vulnerabilidades **moderadas**. Todas son transitivas de
+`firebase-admin` (que YA está en su última versión, 13.10.0): `google-gax`,
+`uuid`, `teeny-request`, `retry-request` — librerías cliente de Google del lado
+servidor.
+
+**Por qué NO se "arreglan"**
+`npm audit fix` solo ofrece **degradar** `firebase-admin` a la v10.3.0, que es un
+cambio rompedor y una versión más antigua. Eso empeora la situación. No hay un
+fix no-rompedor disponible: depende de que Google actualice esas dependencias
+internas aguas arriba.
+
+**Decisión**
+- NO degradar `firebase-admin`.
+- Riesgo real bajo: son moderadas, del lado servidor, en librerías de Google.
+- Acción: monitorear actualizaciones de `firebase-admin` y volver a correr
+  `npm audit` periódicamente. Cuando Google publique deps parcheadas, actualizar.
+
+---
+
 ## 2026-05-23 — Login con Google roto por CSP `frame-src 'none'`
 
 **Síntomas**
