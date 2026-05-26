@@ -124,12 +124,16 @@
 </div>
 
 <!-- Main -->
-<main class="pt-32 pb-20 px-8 min-h-screen">
-  <div class="max-w-7xl mx-auto">
+<main class="pt-32 pb-20 px-8 min-h-screen relative overflow-hidden">
+  <div class="absolute inset-0 opacity-10 pointer-events-none">
+    <div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-blue-500 rounded-full blur-[120px]"></div>
+    <div class="absolute bottom-[10%] left-[-5%] w-[450px] h-[450px] bg-indigo-400 rounded-full blur-[110px]"></div>
+  </div>
+  <div class="max-w-7xl mx-auto relative z-10">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
       <div class="space-y-8" data-aos="fade-right">
-        <span class="text-blue-600 font-label text-xs tracking-[0.3em] uppercase block">Contáctanos</span>
+        <span class="hf-shimmer inline-block px-4 py-1 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 text-xs font-bold tracking-[0.2em] uppercase border border-blue-200 dark:border-blue-700">Contáctanos</span>
         <h1 class="text-5xl font-headline font-bold tracking-tight leading-tight dark:text-white">
           Hablemos de tu <span class="text-gradient">próximo proyecto</span>
         </h1>
