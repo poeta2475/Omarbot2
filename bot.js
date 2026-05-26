@@ -388,7 +388,7 @@ function simNgrama(a, b, n = 2) {
 function normalizar(txt) {
   return txt.toLowerCase()
     .normalize('NFD').replace(/[̀-ͯ]/g, '')
-    .replace(/[¿?¡!.,;:'"()\-_]/g, ' ')
+    .replace(/[^a-z0-9 ]/g, ' ')
     .replace(/\s+/g, ' ').trim();
 }
 
@@ -428,7 +428,9 @@ function detectarIntenciones(mensaje) {
     //   "credito" contiene "red").
     for (const keyword of intencion.palabras) {
       const k = normalizar(keyword);
-      const coincide = k.includes(' ') ? norm.includes(k) : todas.includes(k);
+      const coincide = k.includes(' ')
+        ? norm.includes(k)
+        : (todas.includes(k) || todas.includes(k + 's') || todas.includes(k + 'es'));
       if (coincide) {
         scoreTotal += SCORE_EXACT_MATCH;
         break;
