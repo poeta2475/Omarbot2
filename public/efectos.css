@@ -52,12 +52,12 @@
   right: 30px;
   width: 50px;
   height: 50px;
-  background: #1f2937;
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
   color: white;
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 24px -6px rgba(79,70,229,0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -73,14 +73,25 @@
   transform: translateY(0);
 }
 #btn-subir:hover {
-  background: #0057ff;
+  background: linear-gradient(135deg, #1d4ed8, #4338ca);
   transform: translateY(-3px);
+  box-shadow: 0 10px 30px -6px rgba(79,70,229,0.7);
 }
 .dark #btn-subir {
-  background: #374151;
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
 }
 .dark #btn-subir:hover {
-  background: #0057ff;
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+}
+
+/* En móvil estrecho, compactar los botones flotantes para que no se amontonen */
+@media (max-width: 480px) {
+  #btn-subir {
+    bottom: 148px;
+    right: 18px;
+    width: 44px;
+    height: 44px;
+  }
 }
 
 /* ════════════════════════════════════════
