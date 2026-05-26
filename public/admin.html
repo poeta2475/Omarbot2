@@ -228,7 +228,28 @@
   let products = [];
   let editingDocId = null;
 
+  function skeletonCard() {
+    return `
+      <div class="skeleton-card">
+        <div class="skeleton-box w-full h-56"></div>
+        <div class="p-6 space-y-3">
+          <div class="skeleton-box h-5 w-3/4 rounded"></div>
+          <div class="skeleton-box h-4 w-full rounded"></div>
+          <div class="skeleton-box h-4 w-2/3 rounded"></div>
+          <div class="skeleton-box h-9 w-full rounded-lg mt-4"></div>
+        </div>
+      </div>`;
+  }
+
+  function showSkeletons(n = 8) {
+    const grid = document.getElementById('productGrid');
+    document.getElementById('emptyState').classList.add('hidden');
+    grid.classList.remove('hidden');
+    grid.innerHTML = Array.from({ length: n }, skeletonCard).join('');
+  }
+
   async function loadProducts() {
+    showSkeletons();
     try {
       const response = await fetch('/api/productos?limit=100');
       if (!response.ok) throw new Error('Error al cargar productos');
@@ -262,9 +283,9 @@
     }
     grid.classList.remove('hidden');
     emptyState.classList.add('hidden');
-    grid.innerHTML = products.map(product => `
-      <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-shadow overflow-hidden group">
-        <div class="bg-gray-100 dark:bg-gray-800 relative overflow-hidden h-64">
+    grid.innerHTML = products.map((product, i) => `
+      <div class="product-enter bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all overflow-hidden group" style="animation-delay:${Math.min(i, 11) * 60}ms">
+        <div class="bg-gray-100 dark:bg-gray-700 relative overflow-hidden h-56">
           <img src="${escapeHtml(safeUrl(product.imagen_url) || 'https://via.placeholder.com/400x300?text=Sin+imagen')}" alt="${escapeHtml(product.nombre)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
           <div class="absolute top-2 right-2 bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-bold">
             ${escapeHtml(product.categoria || 'Sin categoría')}

@@ -264,6 +264,33 @@ footer .flex.gap-4 > a:hover {
   background: #1e3a8a;
 }
 
+/* ───── SKELETON DE CARGA (grilla de productos) ───── */
+@keyframes skeletonShimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+.skeleton-card {
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+}
+.dark .skeleton-card { border-color: #374151; background: #1f2937; }
+.skeleton-box {
+  background: linear-gradient(90deg, #eceff3 25%, #f6f8fa 37%, #eceff3 63%);
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.4s ease-in-out infinite;
+}
+.dark .skeleton-box {
+  background: linear-gradient(90deg, #374151 25%, #4b5563 37%, #374151 63%);
+  background-size: 200% 100%;
+}
+
+/* ───── ENTRADA ESCALONADA DE TARJETAS DE PRODUCTO ───── */
+@keyframes productEnter { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.product-enter { opacity: 0; animation: productEnter 0.5s ease-out forwards; }
+@media (prefers-reduced-motion: reduce) {
+  .product-enter { opacity: 1; animation: none; }
+  .skeleton-box { animation: none; }
+}
+
 /* ───── TRUST STRIP: separador sutil con línea de marca ───── */
 .trust-strip-item {
   display: flex;

@@ -271,9 +271,28 @@
   let currentFilter = 'todos';
   let searchTerm = '';
 
+  function skeletonCard() {
+    return `
+      <div class="skeleton-card">
+        <div class="skeleton-box w-full h-56"></div>
+        <div class="p-6 space-y-3">
+          <div class="skeleton-box h-5 w-3/4 rounded"></div>
+          <div class="skeleton-box h-4 w-full rounded"></div>
+          <div class="skeleton-box h-4 w-2/3 rounded"></div>
+          <div class="skeleton-box h-10 w-full rounded-lg mt-4"></div>
+        </div>
+      </div>`;
+  }
+
+  function showSkeletons(n = 8) {
+    document.getElementById('emptyState').classList.add('hidden');
+    document.getElementById('productGrid').innerHTML = Array.from({ length: n }, skeletonCard).join('');
+  }
+
   async function loadProducts() {
     const grid = document.getElementById('productGrid');
     const emptyState = document.getElementById('emptyState');
+    showSkeletons();
     try {
       const response = await fetch('/api/productos?limit=100');
       const data = await response.json();
@@ -331,10 +350,10 @@
     }
 
     emptyState.classList.add('hidden');
-    grid.innerHTML = filtered.map(p => {
+    grid.innerHTML = filtered.map((p, i) => {
       const wsapText = encodeURIComponent(`Hola, vengo de DEOSOLUCIONES y quiero más información sobre: ${p.nombre}`);
       return `
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all overflow-hidden group">
+        <div class="product-enter bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all overflow-hidden group" style="animation-delay:${Math.min(i, 11) * 60}ms">
           <div class="bg-gray-100 dark:bg-gray-700 relative overflow-hidden">
             <img src="${escapeHtml(safeUrl(p.imagen_url) || 'https://via.placeholder.com/400x300?text=Sin+imagen')}" alt="${escapeHtml(p.nombre)}" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"/>
             <div class="absolute top-3 right-3 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold">
