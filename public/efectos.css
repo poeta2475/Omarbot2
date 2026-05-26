@@ -286,8 +286,20 @@ footer .flex.gap-4 > a:hover {
 /* ───── ENTRADA ESCALONADA DE TARJETAS DE PRODUCTO ───── */
 @keyframes productEnter { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 .product-enter { opacity: 0; animation: productEnter 0.5s ease-out forwards; }
+/* Elevación suave al pasar el cursor (las tarjetas de producto no llevan [data-aos]) */
+.product-enter { transition: transform .35s cubic-bezier(.2,.7,.3,1), box-shadow .35s ease; }
+.product-enter:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 48px -16px rgba(30, 58, 138, 0.28),
+              0 8px 18px -10px rgba(79, 70, 229, 0.22);
+}
+.dark .product-enter:hover {
+  box-shadow: 0 22px 48px -16px rgba(0, 0, 0, 0.55),
+              0 0 0 1px rgba(99, 102, 241, 0.25);
+}
 @media (prefers-reduced-motion: reduce) {
-  .product-enter { opacity: 1; animation: none; }
+  .product-enter { opacity: 1; animation: none; transition: none; }
+  .product-enter:hover { transform: none; }
   .skeleton-box { animation: none; }
 }
 
