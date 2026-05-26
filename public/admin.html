@@ -106,11 +106,15 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="productGrid"></div>
 
-        <div id="emptyState" class="text-center py-16 hidden">
-            <div class="max-w-md mx-auto">
+        <div id="emptyState" class="hidden">
+            <div class="max-w-md mx-auto text-center py-12 px-6 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl">
                 <span class="material-symbols-outlined text-6xl text-gray-300 dark:text-gray-600 mb-4">inventory_2</span>
-                <h3 class="text-2xl font-bold text-gray-600 dark:text-gray-400 mb-4">No hay productos registrados</h3>
-                <p class="text-gray-500 dark:text-gray-400">Comienza agregando tu primer producto.</p>
+                <h3 class="text-2xl font-bold text-gray-600 dark:text-gray-400 mb-2">No hay productos registrados</h3>
+                <p class="text-gray-500 dark:text-gray-400 mb-6">Comienza agregando tu primer producto al catálogo.</p>
+                <button data-action="modal-open" class="px-6 py-3 bg-blue-600 text-white font-bold rounded-xl hover:opacity-90 transition-all active:scale-95 inline-flex items-center gap-2">
+                    <span class="material-symbols-outlined">add</span>
+                    Agregar Producto
+                </button>
             </div>
         </div>
     </div>

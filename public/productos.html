@@ -172,10 +172,20 @@
 <section class="px-8 pb-20" id="products">
   <div class="max-w-7xl mx-auto">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="productGrid"></div>
-    <div id="emptyState" class="hidden text-center py-16">
-      <span class="material-symbols-outlined text-6xl text-gray-300 dark:text-gray-600 mb-4">inventory_2</span>
-      <h3 class="text-2xl font-bold text-gray-600 dark:text-gray-400 mb-4">No hay productos disponibles</h3>
-      <p class="text-gray-500 dark:text-gray-400">Pronto agregaremos productos a esta categoría.</p>
+    <div id="emptyState" class="hidden">
+      <div class="max-w-md mx-auto text-center py-12 px-6 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl">
+        <span class="material-symbols-outlined text-6xl text-gray-300 dark:text-gray-600 mb-4">inventory_2</span>
+        <h3 class="text-2xl font-bold text-gray-600 dark:text-gray-400 mb-2">No hay productos disponibles</h3>
+        <p class="text-gray-500 dark:text-gray-400 mb-6">Pronto agregaremos productos a esta categoría. Mientras tanto, conoce nuestros servicios o escríbenos.</p>
+        <div class="flex flex-wrap gap-3 justify-center">
+          <a href="servicios.html" class="px-6 py-3 bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-bold rounded-xl hover:opacity-90 transition-all active:scale-95">
+            Ver servicios
+          </a>
+          <a href="https://wa.me/573242600709?text=Hola,%20vengo%20de%20DEOSOLUCIONES%20y%20quiero%20m%C3%A1s%20informaci%C3%B3n" target="_blank" rel="noopener noreferrer" class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-bold rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all active:scale-95">
+            Escríbenos
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
