@@ -75,7 +75,8 @@ const intenciones = [
     grupo: 'producto',
     palabras: ['hikvision', 'hik vision', 'reconocimiento facial', 'control de acceso',
       'biometrico', 'biométrico', 'asistencia facial', 'torniquete', 'control personal',
-      'face id', 'camara seguridad', 'cámara de seguridad', 'acceso facial',
+      'face id', 'camara', 'camaras', 'cctv', 'videovigilancia', 'vigilancia',
+      'camara seguridad', 'cámara de seguridad', 'camara de seguridad', 'acceso facial',
       'control de asistencia', 'registro facial', 'huella dactilar', 'huella digital'],
     respuesta: () => `🔐 Sistema HikVision - Control de Acceso Facial\n\n✅ Reconocimiento en menos de 0.5 segundos\n✅ Funciona con mascarilla y baja iluminación\n✅ Reportes automáticos de asistencia\n✅ Integración con torniquetes y cerraduras\n✅ App móvil para gestión remota\n✅ Instalación y capacitación incluida\n✅ Garantía de 6 meses\n\nIdeal para:\n→ Empresas con control de personal\n→ Edificios y conjuntos residenciales\n→ Colegios y universidades\n\n📱 Demo gratuita: ${TELEFONO}`
   },
@@ -94,7 +95,7 @@ const intenciones = [
   {
     prioridad: 2,
     grupo: 'rep',
-    palabras: ['computador', 'computadora', 'pc', 'portatil', 'portátil', 'laptop', 'notebook',
+    palabras: ['computador', 'computadora', 'compu', 'pc', 'portatil', 'portátil', 'laptop', 'notebook',
       'no prende', 'no enciende', 'lento', 'lenta', 'virus', 'pantalla azul', 'pantalla negra',
       'se congela', 'se traba', 'se apaga', 'bateria', 'batería', 'teclado dañado',
       'pantalla rota', 'se reinicia', 'hace ruido', 'ventilador', 'overclocking',
@@ -301,7 +302,7 @@ const intenciones = [
     prioridad: 2,
     grupo: 'info',
     palabras: ['que hacen', 'que ofrecen', 'servicios', 'que son', 'catalogo',
-      'portafolio', 'inicio', 'menu', 'menú', 'volver', 'regresar',
+      'portafolio', 'inicio', 'menu', 'menú', 'volver', 'regresar', 'info', 'informacion',
       'empezar', 'ayuda', 'opciones', 'que puedes hacer', 'que sabes'],
     respuesta: () => `🏠 Menú Principal\n\n¿Qué necesitas?\n\n🔐 "hikvision" → Control de acceso facial\n🔧 "servicio" → Servicio técnico\n🛠️ "mantenimiento" → Mantenimiento\n💾 "nas" → Servidores y almacenamiento\n🌐 "red" → Redes y WiFi\n🦠 "virus" → Virus y seguridad\n🔩 "ram" → Actualización de hardware\n🖨️ "impresora" → Soporte impresoras\n💰 "precio" → Precios\n📍 "ubicacion" → Dónde estamos\n🕗 "horario" → Horarios\n💳 "pago" → Medios de pago\n✅ "garantia" → Garantías\n📞 "contacto" → Datos de contacto\n📋 "datos" → Quiero que me contacten`
   },
@@ -421,21 +422,27 @@ function detectarIntenciones(mensaje) {
   for (const intencion of intenciones) {
     let scoreTotal = 0;
 
-    // Nivel 1: coincidencia exacta.
+    // Nivel 1: coincidencia exacta o casi-exacta (tolerante a errores de tipeo).
     // - Frases (varias palabras): se buscan como substring.
-    // - Palabras sueltas: deben coincidir como palabra COMPLETA, para evitar
-    //   falsos positivos por substring (ej: "programa" contiene "ram",
-    //   "credito" contiene "red").
+    // - Palabras sueltas: deben coincidir como palabra COMPLETA (o su plural),
+    //   para evitar falsos positivos por substring (ej: "programa" contiene
+    //   "ram", "credito" contiene "red").
+    // - Typos: una palabra clave larga (≥5) cuenta como exacta si una palabra
+    //   del mensaje es muy similar (Levenshtein ≥0.80 o n-grama ≥0.72). Los
+    //   umbrales separan limpiamente typos reales (≥0.71) de falsos (≤0.50).
+    let exacta = false;
     for (const keyword of intencion.palabras) {
       const k = normalizar(keyword);
-      const coincide = k.includes(' ')
-        ? norm.includes(k)
-        : (todas.includes(k) || todas.includes(k + 's') || todas.includes(k + 'es'));
-      if (coincide) {
-        scoreTotal += SCORE_EXACT_MATCH;
-        break;
+      if (k.includes(' ')) {
+        if (norm.includes(k)) { exacta = true; break; }
+      } else if (todas.includes(k) || todas.includes(k + 's') || todas.includes(k + 'es')) {
+        exacta = true; break;
+      } else if (k.length >= 5 && palabras.some(mp =>
+          mp.length >= 4 && (simLev(mp, k) >= 0.80 || simNgrama(mp, k) >= 0.72))) {
+        exacta = true; break;
       }
     }
+    if (exacta) scoreTotal += SCORE_EXACT_MATCH;
 
     // Nivel 2: scoring por palabras individuales
     for (const keyword of intencion.palabras) {
@@ -443,7 +450,7 @@ function detectarIntenciones(mensaje) {
     }
 
     if (scoreTotal > 0) {
-      resultados.push({ intencion, score: scoreTotal });
+      resultados.push({ intencion, score: scoreTotal, exacta });
     }
   }
 
@@ -452,7 +459,11 @@ function detectarIntenciones(mensaje) {
   // un intent de prioridad baja con score alto.
   const calificados = resultados.filter(r => r.score >= SCORE_MIN_THRESHOLD);
 
+  // Orden: las coincidencias exactas mandan sobre la mera acumulación de
+  // palabras sueltas (evita que un intent de prioridad alta gane por casualidad
+  // al juntar palabras genéricas como "necesito"+"ayuda"). Luego prioridad y score.
   calificados.sort((a, b) => {
+    if (a.exacta !== b.exacta) return a.exacta ? -1 : 1;
     if (a.intencion.prioridad !== b.intencion.prioridad) {
       return a.intencion.prioridad - b.intencion.prioridad;
     }
