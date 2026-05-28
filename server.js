@@ -380,13 +380,13 @@ app.post('/api/contacto', contactoLimiter, async (req, res) => {
 // ──────────────────────────────────────────
 // API - Bot
 // ──────────────────────────────────────────
-const { obtenerRespuesta } = require('./bot.js');
+const { responder } = require('./bot.js');
 
 app.post('/api/bot', botLimiter, async (req, res) => {
   const { mensaje } = req.body;
   if (!mensaje || typeof mensaje !== 'string') return res.status(400).json({ error: 'Mensaje requerido' });
   if (mensaje.length > 500) return res.status(400).json({ error: 'Mensaje demasiado largo' });
-  const respuesta = obtenerRespuesta(mensaje);
+  const { respuesta, sugerencias } = responder(mensaje);
 
   // Guardar en Firebase si el bot no entendió
   if (respuesta.includes('No entendí')) {
@@ -400,7 +400,7 @@ app.post('/api/bot', botLimiter, async (req, res) => {
     }
   }
 
-  res.json({ respuesta });
+  res.json({ respuesta, sugerencias });
 });
 
 // ──────────────────────────────────────────

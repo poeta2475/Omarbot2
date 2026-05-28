@@ -97,6 +97,38 @@
     mensajesDiv.scrollTop = mensajesDiv.scrollHeight;
   }
 
+  // Botones de seguimiento contextuales que envía el bot ({label, tema|accion}).
+  function mostrarSugerencias(sugerencias) {
+    if (!Array.isArray(sugerencias) || sugerencias.length === 0) {
+      mostrarMenuFlotante();
+      return;
+    }
+    const div = document.createElement('div');
+    div.className = 'menu-flotante';
+    sugerencias.forEach(s => {
+      const btn = document.createElement('button');
+      // Destacar las acciones de conversión (dejar datos / WhatsApp).
+      btn.className = 'menu-btn' + (s.accion ? ' home' : '');
+      btn.textContent = s.label;
+      btn.onclick = () => {
+        div.remove();
+        if (s.accion === 'datos') {
+          mostrarTyping(800, () => mostrarFormulario());
+        } else if (s.accion === 'whatsapp') {
+          abrirWhatsapp();
+        } else if (s.tema === 'menu') {
+          irAlMenu();
+        } else if (s.tema) {
+          agregarMensaje('usuario', s.label);
+          procesarMensaje(s.tema);
+        }
+      };
+      div.appendChild(btn);
+    });
+    mensajesDiv.appendChild(div);
+    mensajesDiv.scrollTop = mensajesDiv.scrollHeight;
+  }
+
   function abrirWhatsapp() {
     agregarMensaje('bot', '📱 Puedes escribirnos directamente por WhatsApp:');
     setTimeout(() => {
@@ -169,7 +201,7 @@
           agregarMensaje('bot', data.respuesta);
           const temaDetectado = ['hikvision', 'servidor', 'mantenimiento', 'precio', 'computador', 'nas', 'portatil', 'wifi', 'red', 'malware', 'virus', 'ram', 'ssd', 'impresora'].find(t => textoNorm.includes(t));
           if (temaDetectado) contexto.ultimoTema = temaDetectado;
-          setTimeout(() => mostrarMenuFlotante(), 300);
+          setTimeout(() => mostrarSugerencias(data.sugerencias), 300);
         })
         .catch(() => agregarMensaje('bot', '😕 Hubo un error. Contáctanos al 📱 324 260 0709'));
     });

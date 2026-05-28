@@ -6,7 +6,7 @@
 // ════════════════════════════════════════
 const express = require('express');
 const path = require('path');
-const { obtenerRespuesta } = require('./bot.js');
+const { responder } = require('./bot.js');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,7 +20,7 @@ app.post('/api/bot', (req, res) => {
   if (!mensaje || typeof mensaje !== 'string') {
     return res.status(400).json({ error: 'Mensaje requerido' });
   }
-  res.json({ respuesta: obtenerRespuesta(mensaje) });
+  res.json(responder(mensaje));
 });
 
 // Contacto simulado (no envía correo ni guarda en Firebase)

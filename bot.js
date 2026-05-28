@@ -31,8 +31,16 @@ const afirmacionesVariables = [
   `🙌 ¡Excelente! Podemos continuar de dos formas:\n\n• Escribe "datos" y te llamamos nosotros\n• O contáctanos directo: ${TELEFONO}`
 ];
 
+// Aleatorio sin repetir el último elegido de cada arreglo (evita ver el mismo
+// saludo/despedida dos veces seguidas). Recuerda el índice previo por arreglo.
+const _ultimoIdx = new WeakMap();
 function aleatorio(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
+  if (arr.length <= 1) return arr[0];
+  const prev = _ultimoIdx.get(arr);
+  let i;
+  do { i = Math.floor(Math.random() * arr.length); } while (i === prev);
+  _ultimoIdx.set(arr, i);
+  return arr[i];
 }
 
 // ── BASE DE CONOCIMIENTO ──
@@ -393,9 +401,7 @@ function normalizar(txt) {
     .replace(/\s+/g, ' ').trim();
 }
 
-function scoreIntención(mensajePalabras, keyword) {
-  const kNorm = normalizar(keyword);
-  const kPalabras = kNorm.split(' ').filter(p => p.length > 2);
+function scoreIntención(mensajePalabras, kPalabras) {
   let score = 0;
   for (const kp of kPalabras) {
     for (const mp of mensajePalabras) {
@@ -408,6 +414,20 @@ function scoreIntención(mensajePalabras, keyword) {
     }
   }
   return score;
+}
+
+// Precomputar las keywords normalizadas UNA sola vez (no en cada mensaje):
+// para cada intención guardamos, por keyword, su forma normalizada, si es frase
+// y sus palabras de scoring. Acelera ~4x el matching sin cambiar resultados.
+for (const intencion of intenciones) {
+  intencion._kw = intencion.palabras.map(keyword => {
+    const norm = normalizar(keyword);
+    return {
+      norm,
+      esFrase: norm.includes(' '),
+      parts: norm.split(' ').filter(p => p.length > 2)
+    };
+  });
 }
 
 // ──────────────────────────────────────────
@@ -431,9 +451,8 @@ function detectarIntenciones(mensaje) {
     //   del mensaje es muy similar (Levenshtein ≥0.80 o n-grama ≥0.72). Los
     //   umbrales separan limpiamente typos reales (≥0.71) de falsos (≤0.50).
     let exacta = false;
-    for (const keyword of intencion.palabras) {
-      const k = normalizar(keyword);
-      if (k.includes(' ')) {
+    for (const { norm: k, esFrase } of intencion._kw) {
+      if (esFrase) {
         if (norm.includes(k)) { exacta = true; break; }
       } else if (todas.includes(k) || todas.includes(k + 's') || todas.includes(k + 'es')) {
         exacta = true; break;
@@ -445,8 +464,8 @@ function detectarIntenciones(mensaje) {
     if (exacta) scoreTotal += SCORE_EXACT_MATCH;
 
     // Nivel 2: scoring por palabras individuales
-    for (const keyword of intencion.palabras) {
-      scoreTotal += scoreIntención(palabras, keyword);
+    for (const { parts } of intencion._kw) {
+      scoreTotal += scoreIntención(palabras, parts);
     }
 
     if (scoreTotal > 0) {
@@ -474,39 +493,127 @@ function detectarIntenciones(mensaje) {
 }
 
 // ──────────────────────────────────────────
+// SUGERENCIAS CONTEXTUALES (botones rápidos)
+// La clave es la PRIMERA palabra de cada intención (estable).
+// ──────────────────────────────────────────
+const TEXTO_NO_ENTENDI = `🤔 No entendí bien, pero puedo ayudarte con:\n\n🔐 Control de acceso → "hikvision"\n🔧 Servicio técnico → "servicio"\n🌐 Redes y WiFi → "red"\n💰 Precios → "precio"\n📍 Ubicación → "ubicacion"\n📞 Contacto → "contacto"\n📋 Dejar datos → "datos"\n\n📱 O escríbenos directo: ${TELEFONO}`;
+
+// Acciones especiales que NO envían texto al bot (las maneja el cliente).
+const ACC = {
+  datos:    { label: '📋 Dejar mis datos', accion: 'datos' },
+  whatsapp: { label: '💬 WhatsApp',        accion: 'whatsapp' },
+  menu:     { label: '🏠 Menú',            tema: 'menu' }
+};
+
+// Etiqueta visible de cada tema cuando se ofrece como botón (envía 'tema' al bot).
+const TEMA = {
+  'hikvision':        '🔐 Control de acceso',
+  'servicio tecnico': '🔧 Servicio técnico',
+  'computador':       '💻 Reparación de PC',
+  'ram':              '🔩 Hardware',
+  'nas':              '💾 Servidores/NAS',
+  'red':              '🌐 Redes/WiFi',
+  'virus':            '🦠 Virus',
+  'impresora':        '🖨️ Impresoras',
+  'mantenimiento':    '🛠️ Mantenimiento',
+  'software':         '💿 Software',
+  'precio':           '💰 Precios',
+  'garantia':         '✅ Garantía',
+  'diagnostico':      '🎉 Diagnóstico gratis',
+  'horario':          '🕗 Horario',
+  'donde estan':      '📍 Ubicación',
+  'pago':             '💳 Medios de pago',
+  'quiero comprar':   '🛒 Comprar equipos',
+  'agendar':          '📅 Agendar',
+  'instalacion':      '📦 Instalación'
+};
+
+// Qué ofrecer DESPUÉS de cada intención (empuja al cliente a contactar).
+const SEGUIMIENTO = {
+  'hikvision':        ['precio', 'datos', 'whatsapp'],
+  'servicio tecnico': ['precio', 'agendar', 'whatsapp'],
+  'computador':       ['precio', 'datos', 'whatsapp'],
+  'ram':              ['precio', 'datos', 'whatsapp'],
+  'nas':              ['precio', 'datos', 'whatsapp'],
+  'red':              ['precio', 'datos', 'whatsapp'],
+  'virus':            ['diagnostico', 'datos', 'whatsapp'],
+  'impresora':        ['precio', 'datos', 'whatsapp'],
+  'mantenimiento':    ['precio', 'agendar', 'whatsapp'],
+  'software':         ['precio', 'datos', 'whatsapp'],
+  'precio':           ['diagnostico', 'agendar', 'whatsapp'],
+  'garantia':         ['servicio tecnico', 'datos', 'whatsapp'],
+  'diagnostico':      ['agendar', 'datos', 'whatsapp'],
+  'horario':          ['donde estan', 'datos', 'whatsapp'],
+  'donde estan':      ['horario', 'datos', 'whatsapp'],
+  'pago':             ['precio', 'datos', 'whatsapp'],
+  'contacto':         ['datos', 'whatsapp'],
+  'datos':            ['whatsapp'],
+  'quiero comprar':   ['precio', 'datos', 'whatsapp'],
+  'agendar':          ['datos', 'whatsapp'],
+  'instalacion':      ['precio', 'datos', 'whatsapp'],
+  'quienes son':      ['servicio tecnico', 'datos', 'whatsapp'],
+  'que hacen':        ['datos', 'whatsapp'],
+  'urgente':          ['whatsapp', 'datos'],
+  'asesor':           ['whatsapp', 'datos'],
+  'perdi datos':      ['whatsapp', 'datos'],
+  'hola':             ['servicio tecnico', 'hikvision', 'precio'],
+  'gracias':          ['whatsapp'],
+  'si':               ['datos', 'whatsapp'],
+  'no gracias':       ['whatsapp']
+};
+
+const SEGUIMIENTO_DEFAULT = ['menu', 'datos', 'whatsapp'];
+
+// Construye los objetos de botón a partir de una lista de claves (de ACC o TEMA).
+function construirSugerencias(claves) {
+  const out = [];
+  for (const k of claves) {
+    if (ACC[k]) out.push(ACC[k]);
+    else if (TEMA[k]) out.push({ label: TEMA[k], tema: k });
+  }
+  return out;
+}
+
+// ──────────────────────────────────────────
 // FUNCIÓN PRINCIPAL
 // ──────────────────────────────────────────
-function obtenerRespuesta(mensaje) {
+// Devuelve { respuesta, sugerencias }. En vez de pegar dos respuestas largas
+// (muro de texto), responde la principal y ofrece la segunda como botón.
+function responder(mensaje) {
   if (!mensaje || mensaje.trim().length < 1) {
-    return '🤔 No recibí ningún mensaje. ¿En qué te puedo ayudar?';
+    return { respuesta: '🤔 No recibí ningún mensaje. ¿En qué te puedo ayudar?',
+             sugerencias: construirSugerencias(SEGUIMIENTO_DEFAULT) };
   }
 
-  const intencionesDet = detectarIntenciones(mensaje);
+  const dets = detectarIntenciones(mensaje);
 
-  if (intencionesDet.length === 0) {
-    return `🤔 No entendí bien, pero puedo ayudarte con:\n\n🔐 Control de acceso → "hikvision"\n🔧 Servicio técnico → "servicio"\n🌐 Redes y WiFi → "red"\n💰 Precios → "precio"\n📍 Ubicación → "ubicacion"\n📞 Contacto → "contacto"\n📋 Dejar datos → "datos"\n\n📱 O escríbenos directo: ${TELEFONO}`;
+  if (dets.length === 0) {
+    return { respuesta: TEXTO_NO_ENTENDI, sugerencias: construirSugerencias(SEGUIMIENTO_DEFAULT) };
   }
 
-  const top     = intencionesDet[0];
-  const segunda = intencionesDet[1];
+  const top     = dets[0];
+  const segunda = dets[1];
+  const clave   = top.intencion.palabras[0];
+  let claves    = (SEGUIMIENTO[clave] || SEGUIMIENTO_DEFAULT).slice();
 
-  // Combinar dos respuestas SOLO cuando aportan información complementaria,
-  // es decir, cuando pertenecen a grupos distintos (ej: precio + hikvision,
-  // venta + nas). Si son del mismo grupo (ej: virus + pc) la segunda es
-  // redundante y solo generaría un muro de texto, así que se omite.
-  if (
-    segunda &&
-    segunda.score >= SCORE_SECOND_MIN &&
-    top.intencion.prioridad <= 2 &&
-    segunda.intencion.prioridad <= 2 &&
-    top.intencion.grupo !== segunda.intencion.grupo
-  ) {
-    return top.intencion.respuesta() + '\n\n─────────────────\n\n' + segunda.intencion.respuesta();
+  // Si hay una segunda intención relevante de OTRO grupo (ej. "precio hikvision"),
+  // la ofrecemos como primer botón en lugar de concatenar su respuesta completa.
+  if (segunda && segunda.score >= SCORE_SECOND_MIN &&
+      top.intencion.prioridad <= 2 && segunda.intencion.prioridad <= 2 &&
+      top.intencion.grupo !== segunda.intencion.grupo) {
+    const k2 = segunda.intencion.palabras[0];
+    if (TEMA[k2]) claves = [k2, ...claves.filter(c => c !== k2)];
   }
 
-  return top.intencion.respuesta();
+  claves = [...new Set(claves)].slice(0, 4);
+  return { respuesta: top.intencion.respuesta(), sugerencias: construirSugerencias(claves) };
+}
+
+// Compat: versión que solo devuelve el texto.
+function obtenerRespuesta(mensaje) {
+  return responder(mensaje).respuesta;
 }
 
 if (typeof module !== 'undefined') {
-  module.exports = { obtenerRespuesta };
+  module.exports = { obtenerRespuesta, responder };
 }
