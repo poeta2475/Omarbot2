@@ -383,11 +383,10 @@ app.post('/api/contacto', contactoLimiter, async (req, res) => {
 const { responder } = require('./bot.js');
 
 app.post('/api/bot', botLimiter, async (req, res) => {
-  const { mensaje, contexto } = req.body;
+  const { mensaje } = req.body;
   if (!mensaje || typeof mensaje !== 'string') return res.status(400).json({ error: 'Mensaje requerido' });
   if (mensaje.length > 500) return res.status(400).json({ error: 'Mensaje demasiado largo' });
-  const ctx = (typeof contexto === 'string' && contexto.length <= 50) ? contexto : undefined;
-  const { respuesta, sugerencias } = responder(mensaje, ctx);
+  const { respuesta, sugerencias } = responder(mensaje);
 
   // Guardar en Firebase si el bot no entendió
   if (respuesta.includes('No entendí')) {

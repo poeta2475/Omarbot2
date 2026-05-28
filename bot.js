@@ -579,21 +579,15 @@ function construirSugerencias(claves) {
 // ──────────────────────────────────────────
 // Devuelve { respuesta, sugerencias }. En vez de pegar dos respuestas largas
 // (muro de texto), responde la principal y ofrece la segunda como botón.
-// `contexto` (tema previo) se usa SOLO como respaldo: si el mensaje por sí solo
-// no se entiende, se reintenta anteponiendo el contexto. Nunca se concatena a
-// ciegas (eso rompía comandos como "menú", "gracias", "inicio").
-function responder(mensaje, contexto) {
+// Cada mensaje se evalúa por sí solo: no se arrastra el tema anterior (eso
+// forzaba mensajes sin sentido al último tema y rompía comandos como "menú").
+function responder(mensaje) {
   if (!mensaje || mensaje.trim().length < 1) {
     return { respuesta: '🤔 No recibí ningún mensaje. ¿En qué te puedo ayudar?',
              sugerencias: construirSugerencias(SEGUIMIENTO_DEFAULT) };
   }
 
-  let dets = detectarIntenciones(mensaje);
-
-  // Respaldo: el mensaje solo no se entendió, pero hay un tema previo.
-  if (dets.length === 0 && contexto && typeof contexto === 'string') {
-    dets = detectarIntenciones(contexto + ' ' + mensaje);
-  }
+  const dets = detectarIntenciones(mensaje);
 
   if (dets.length === 0) {
     return { respuesta: TEXTO_NO_ENTENDI, sugerencias: construirSugerencias(SEGUIMIENTO_DEFAULT) };

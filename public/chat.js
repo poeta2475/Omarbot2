@@ -16,7 +16,6 @@
 
   let iniciado = false;
   let esperandoFormulario = false;
-  let contexto = { ultimoTema: null };
 
   function escHTML(str) {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -199,13 +198,11 @@
       fetch('/api/bot', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mensaje: texto, contexto: contexto.ultimoTema || undefined })
+        body: JSON.stringify({ mensaje: texto })
       })
         .then(r => r.json())
         .then(data => {
           agregarMensaje('bot', data.respuesta);
-          const temaDetectado = ['hikvision', 'servidor', 'mantenimiento', 'precio', 'computador', 'nas', 'portatil', 'wifi', 'red', 'malware', 'virus', 'ram', 'ssd', 'impresora'].find(t => textoNorm.includes(t));
-          if (temaDetectado) contexto.ultimoTema = temaDetectado;
           setTimeout(() => mostrarSugerencias(data.sugerencias), 300);
         })
         .catch(() => agregarMensaje('bot', '😕 Hubo un error. Contáctanos al 📱 324 260 0709'));
