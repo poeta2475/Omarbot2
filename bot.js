@@ -271,7 +271,7 @@ const intenciones = [
   {
     prioridad: 2,
     grupo: 'comercial',
-    palabras: ['quiero comprar', 'venden equipos', 'venta de equipos', 'tienen equipos',
+    palabras: ['quiero comprar', 'comprar', 'venden equipos', 'venta de equipos', 'tienen equipos',
       'tienen computadores', 'precio de un computador', 'donde compro', 'venta',
       'quiero uno', 'quiero un equipo', 'me venden'],
     respuesta: () => `🛒 Venta de Equipos\n\n• 💻 Computadores y portátiles (nuevos y reacondicionados)\n• 🖥️ Servidores\n• 💾 NAS y discos\n• 🔐 Equipos HikVision\n• 🖨️ Impresoras\n• 🔌 Periféricos y accesorios\n\n✅ Garantía 1 año\n✅ Asesoría sin costo\n✅ Financiación disponible\n💳 Todos los medios de pago\n\n📱 ${TELEFONO}`
@@ -579,13 +579,21 @@ function construirSugerencias(claves) {
 // ──────────────────────────────────────────
 // Devuelve { respuesta, sugerencias }. En vez de pegar dos respuestas largas
 // (muro de texto), responde la principal y ofrece la segunda como botón.
-function responder(mensaje) {
+// `contexto` (tema previo) se usa SOLO como respaldo: si el mensaje por sí solo
+// no se entiende, se reintenta anteponiendo el contexto. Nunca se concatena a
+// ciegas (eso rompía comandos como "menú", "gracias", "inicio").
+function responder(mensaje, contexto) {
   if (!mensaje || mensaje.trim().length < 1) {
     return { respuesta: '🤔 No recibí ningún mensaje. ¿En qué te puedo ayudar?',
              sugerencias: construirSugerencias(SEGUIMIENTO_DEFAULT) };
   }
 
-  const dets = detectarIntenciones(mensaje);
+  let dets = detectarIntenciones(mensaje);
+
+  // Respaldo: el mensaje solo no se entendió, pero hay un tema previo.
+  if (dets.length === 0 && contexto && typeof contexto === 'string') {
+    dets = detectarIntenciones(contexto + ' ' + mensaje);
+  }
 
   if (dets.length === 0) {
     return { respuesta: TEXTO_NO_ENTENDI, sugerencias: construirSugerencias(SEGUIMIENTO_DEFAULT) };

@@ -16,11 +16,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Bot real (usa bot.js)
 app.post('/api/bot', (req, res) => {
-  const { mensaje } = req.body || {};
+  const { mensaje, contexto } = req.body || {};
   if (!mensaje || typeof mensaje !== 'string') {
     return res.status(400).json({ error: 'Mensaje requerido' });
   }
-  res.json(responder(mensaje));
+  const ctx = (typeof contexto === 'string' && contexto.length <= 50) ? contexto : undefined;
+  res.json(responder(mensaje, ctx));
 });
 
 // Contacto simulado (no envía correo ni guarda en Firebase)

@@ -103,12 +103,17 @@
       mostrarMenuFlotante();
       return;
     }
+    // Garantizar que SIEMPRE se pueda volver al menú principal.
+    const lista = sugerencias.slice();
+    if (!lista.some(s => s.tema === 'menu')) {
+      lista.push({ label: '🏠 Menú', tema: 'menu' });
+    }
     const div = document.createElement('div');
     div.className = 'menu-flotante';
-    sugerencias.forEach(s => {
+    lista.forEach(s => {
       const btn = document.createElement('button');
-      // Destacar las acciones de conversión (dejar datos / WhatsApp).
-      btn.className = 'menu-btn' + (s.accion ? ' home' : '');
+      // Destacar acciones de conversión (datos/WhatsApp) y el botón de menú.
+      btn.className = 'menu-btn' + (s.accion || s.tema === 'menu' ? ' home' : '');
       btn.textContent = s.label;
       btn.onclick = () => {
         div.remove();
@@ -194,7 +199,7 @@
       fetch('/api/bot', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mensaje: (texto.split(' ').length <= 3 && contexto.ultimoTema) ? contexto.ultimoTema + ' ' + texto : texto })
+        body: JSON.stringify({ mensaje: texto, contexto: contexto.ultimoTema || undefined })
       })
         .then(r => r.json())
         .then(data => {
