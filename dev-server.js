@@ -29,6 +29,11 @@ app.post('/api/contacto', (req, res) => {
   res.json({ message: 'Contacto recibido (modo preview)' });
 });
 
+// Stub de productos para preview local (sin Firebase)
+app.get('/api/productos', (req, res) => {
+  res.json({ productos: [], total: 0, page: 1, limit: 100 });
+});
+
 app.get('/api/health', (req, res) => res.json({ status: 'ok', mode: 'preview' }));
 
 app.listen(PORT, () => {
