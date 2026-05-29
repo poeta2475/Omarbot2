@@ -31,6 +31,9 @@ function getFriendlyErrorMessage(errorCode) {
         'auth/requires-recent-login': 'Por seguridad, cierra sesión y vuelve a entrar.',
         'auth/popup-closed-by-user': 'Inicio de sesión cancelado.',
         'auth/cancelled-popup-request': 'Solo se permite una ventana de inicio de sesión a la vez.',
+        'auth/popup-blocked': 'El navegador bloqueó la ventana de inicio de sesión. Permite las ventanas emergentes e intenta de nuevo.',
+        'auth/unauthorized-domain': 'Este dominio no está autorizado en Firebase. Pruébalo desde localhost, o agrégalo en Authentication → Settings → Authorized domains.',
+        'auth/operation-not-allowed': 'El inicio de sesión con Google no está habilitado en Firebase.',
         'auth/account-exists-with-different-credential': 'Ya existe una cuenta con este correo usando otro método de inicio de sesión.',
         'auth/invalid-verification-code': 'Código de verificación inválido.',
         'auth/invalid-verification-id': 'ID de verificación inválido.'
