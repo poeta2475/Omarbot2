@@ -447,3 +447,26 @@ nav a.transition-colors::after {
   #mobileMenu.menu-enter { transform: none !important; }
   #loginModal.modal-enter > div { transform: none !important; }
 }
+
+/* ── BARRA DE ESCANEO FACIAL (hero biometría index.html) ── */
+.face-scan-line {
+  position: absolute;
+  left: 8%;
+  width: 84%;
+  height: 3px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, transparent, #2563eb 20%, #4f46e5 80%, transparent);
+  box-shadow: 0 0 12px 2px rgba(37, 99, 235, 0.55);
+  z-index: 20;
+  animation: faceScan 2.6s ease-in-out infinite;
+}
+@keyframes faceScan {
+  0%   { top: 14%; opacity: 0; }
+  15%  { opacity: 1; }
+  50%  { top: 84%; opacity: 1; }
+  85%  { opacity: 1; }
+  100% { top: 14%; opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .face-scan-line { animation: none; top: 50%; opacity: 0.6; }
+}
