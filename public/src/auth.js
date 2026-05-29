@@ -299,7 +299,8 @@ window.handleAuthFormSubmit = handleAuthFormSubmit;
 // --- ESTADO DE SESIÓN ---
 onAuthStateChanged(auth, async (user) => {
     const loginBtns = document.querySelectorAll('.btn-login-trigger');
-    const adminLinks = document.querySelectorAll('#adminLink');
+    // .admin-link cubre el enlace ADMIN tanto del nav de escritorio como del menú móvil
+    const adminLinks = document.querySelectorAll('.admin-link');
 
     if (user && user.emailVerified) {
         loginBtns.forEach(btn => {
