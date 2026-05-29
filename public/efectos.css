@@ -451,22 +451,25 @@ nav a.transition-colors::after {
 /* ── BARRA DE ESCANEO FACIAL (hero biometría index.html) ── */
 .face-scan-line {
   position: absolute;
+  top: 50%;
   left: 8%;
   width: 84%;
   height: 3px;
   border-radius: 9999px;
   background: linear-gradient(90deg, transparent, #2563eb 20%, #4f46e5 80%, transparent);
-  box-shadow: 0 0 12px 2px rgba(37, 99, 235, 0.55);
+  box-shadow: 0 0 14px 3px rgba(37, 99, 235, 0.6);
   z-index: 20;
-  animation: faceScan 2.6s ease-in-out infinite;
+  /* alternate hace que suba y baje sin saltos; el transform es confiable
+     en todos los navegadores y no lo afecta el layout */
+  animation: faceScan 2.4s ease-in-out infinite alternate;
 }
 @keyframes faceScan {
-  0%   { top: 14%; opacity: 0; }
-  15%  { opacity: 1; }
-  50%  { top: 84%; opacity: 1; }
-  85%  { opacity: 1; }
-  100% { top: 14%; opacity: 0; }
+  0%   { transform: translateY(-120px); opacity: 0.35; }
+  50%  { opacity: 1; }
+  100% { transform: translateY(120px); opacity: 0.35; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .face-scan-line { animation: none; top: 50%; opacity: 0.6; }
+  /* aun con animaciones reducidas mantenemos el escaneo (es el concepto del
+     diseño), pero más lento y suave para no molestar */
+  .face-scan-line { animation-duration: 4s; }
 }
