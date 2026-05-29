@@ -384,3 +384,38 @@ textarea {
 
 /* ───── F: Zoom de imagen de producto con duración explícita ───── */
 .product-enter img { transition: transform 0.3s ease; }
+
+/* ════════════════════════════════════════
+   EASING ESTILO EMIL KOWALSKI (Vaul / Sonner)
+   Curva de "frenado suave" que da sensación de peso físico.
+   Solo refina el feel de transiciones e interacciones que YA existen;
+   no cambia estructura, layout ni JS. La especificidad extra
+   (body ...) garantiza que gane sobre las utilidades de Tailwind.
+   ════════════════════════════════════════ */
+:root { --ease-soft: cubic-bezier(0.32, 0.72, 0, 1); }
+
+/* Botones interactivos: respuesta táctil con frenado natural */
+body button,
+body a.btn-primary-hero,
+body .btn-primary,
+body [class*="active:scale"] {
+  transition-timing-function: var(--ease-soft);
+}
+
+/* El hero CTA usaba 'ease' plano → curva suave */
+.btn-primary-hero { transition: transform 0.4s var(--ease-soft), box-shadow 0.4s var(--ease-soft) !important; }
+
+/* Subrayado del nav: crece con la curva suave en vez de 'ease' */
+nav a.transition-colors::after {
+  transition: width 0.3s var(--ease-soft), left 0.3s var(--ease-soft) !important;
+}
+
+/* Quick-buttons del chat: salida/entrada con frenado natural */
+.quick-btn { transition: background 0.25s var(--ease-soft), color 0.25s var(--ease-soft), transform 0.25s var(--ease-soft), box-shadow 0.25s var(--ease-soft) !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  body button, body a.btn-primary-hero, body .btn-primary,
+  .btn-primary-hero, nav a.transition-colors::after, .quick-btn {
+    transition-timing-function: linear;
+  }
+}
