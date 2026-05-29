@@ -107,12 +107,24 @@ if (process.env.FIREBASE_SERVICE_ACCOUNT) {
   try { serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT); }
   catch { throw new Error('FIREBASE_SERVICE_ACCOUNT no es JSON válido'); }
 } else {
-  try {
-    serviceAccount = require('./deosoluciones-29141-firebase-adminsdk-fbsvc-922ff09da1.json');
-  } catch {
+  // Busca automáticamente cualquier clave de servicio de Firebase en la raíz,
+  // así no hay que renombrar el archivo descargado con un nombre exacto.
+  // Patrón típico del archivo de Firebase: *-firebase-adminsdk-*.json
+  const fs = require('fs');
+  const keyFile = fs.readdirSync(__dirname)
+    .find(f => /firebase-adminsdk.*\.json$/i.test(f));
+  if (keyFile) {
+    try {
+      serviceAccount = require(path.join(__dirname, keyFile));
+      console.log(`🔑 Credenciales de Firebase cargadas desde: ${keyFile}`);
+    } catch {
+      throw new Error(`No se pudo leer el archivo de credenciales ${keyFile} (¿JSON corrupto?).`);
+    }
+  } else {
     throw new Error(
       'Faltan credenciales de Firebase.\n' +
-      'Opción A: Coloca el archivo deosoluciones-29141-firebase-adminsdk-fbsvc-922ff09da1.json en la raíz del proyecto.\n' +
+      'Opción A: Coloca el archivo *-firebase-adminsdk-*.json (el que descargas de\n' +
+      '          Firebase → Configuración → Cuentas de servicio → Generar clave) en la raíz del proyecto.\n' +
       'Opción B: Define la variable de entorno FIREBASE_SERVICE_ACCOUNT con el contenido JSON del service account.'
     );
   }
