@@ -324,9 +324,13 @@ const motivosTexto = {
 };
 
 app.post('/api/contacto', contactoLimiter, async (req, res) => {
-  const { nombre, telefono, correo, empresa, servicio, motivo } = req.body;
+  const { nombre, telefono, correo, empresa, servicio, motivo, acepto } = req.body;
   if (!nombre || !telefono || !correo || !servicio || !motivo) {
     return res.status(400).json({ error: 'Faltan campos obligatorios' });
+  }
+  // Ley 1581/2012: se requiere autorización expresa para tratar datos personales
+  if (acepto !== true) {
+    return res.status(400).json({ error: 'Debes autorizar el tratamiento de datos personales' });
   }
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(correo)) return res.status(400).json({ error: 'Correo electrónico no válido' });
@@ -342,6 +346,8 @@ app.post('/api/contacto', contactoLimiter, async (req, res) => {
       nombre, telefono, correo,
       empresa: empresa || '',
       servicio, motivo,
+      autorizacionDatos: true,
+      fechaAutorizacion: admin.firestore.FieldValue.serverTimestamp(),
       fecha: admin.firestore.FieldValue.serverTimestamp()
     });
 

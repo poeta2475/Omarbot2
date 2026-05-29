@@ -246,6 +246,10 @@
           <option value="comprar-equipo">🛒 Quiero comprar un equipo</option>
           <option value="otro">Otro</option>
         </select>
+        <label class="cf-consent">
+          <input type="checkbox" id="cf-acepto"/>
+          <span>Autorizo el tratamiento de mis datos según la <a href="politica-privacidad.html" target="_blank">Política de Datos</a> (Ley 1581/2012). *</span>
+        </label>
         <button class="chat-form-btn" id="cf-enviar" data-action="chat-send">Enviar mensaje 📩</button>
         <button class="chat-form-cancel" data-action="chat-cancel">Cancelar</button>
       `;
@@ -262,11 +266,19 @@
     const empresa = document.getElementById('cf-empresa').value.trim();
     const servicio = document.getElementById('cf-servicio').value;
     const motivo = document.getElementById('cf-motivo').value;
+    const acepto = document.getElementById('cf-acepto').checked;
     const btn = document.getElementById('cf-enviar');
 
     if (!nombre || !telefono || !correo || !servicio || !motivo) {
       btn.style.background = '#ef4444';
       btn.textContent = '⚠️ Completa todos los campos';
+      setTimeout(() => { btn.style.background = ''; btn.textContent = 'Enviar mensaje 📩'; }, 2000);
+      return;
+    }
+
+    if (!acepto) {
+      btn.style.background = '#ef4444';
+      btn.textContent = '⚠️ Autoriza el uso de datos';
       setTimeout(() => { btn.style.background = ''; btn.textContent = 'Enviar mensaje 📩'; }, 2000);
       return;
     }
@@ -278,7 +290,7 @@
       const res = await fetch('/api/contacto', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, telefono, correo, empresa, servicio, motivo })
+        body: JSON.stringify({ nombre, telefono, correo, empresa, servicio, motivo, acepto: true })
       });
       if (res.ok) {
         btn.closest('.chat-form').remove();
