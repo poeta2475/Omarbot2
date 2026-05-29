@@ -106,6 +106,7 @@ body {
   text-rendering: optimizeLegibility;
   font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
   font-kerning: normal;
+  overflow-x: hidden;
 }
 
 /* Refinamiento tipográfico (estilo Impeccable):
