@@ -37,6 +37,7 @@
   <link rel="icon" type="image/png" href="images/Logo6fn.png">
   <link rel="stylesheet" href="efectos.css">
   <link rel="stylesheet" href="chat.css">
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"/>
 </head>
 <body class="bg-white dark:bg-gray-900 text-black dark:text-white font-body transition-colors duration-300">
 
@@ -133,14 +134,14 @@
   </div>
 
   <div class="max-w-3xl mx-auto relative z-10">
-    <span class="hf-shimmer inline-block px-4 py-1 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 text-xs font-bold tracking-[0.2em] uppercase border border-blue-200 dark:border-blue-700 mb-6">Protección de datos</span>
-    <h1 class="text-4xl md:text-5xl font-headline font-extrabold tracking-tight leading-tight dark:text-white mb-4">
+    <span class="hf-shimmer inline-block px-4 py-1 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 text-xs font-bold tracking-[0.2em] uppercase border border-blue-200 dark:border-blue-700 mb-6" data-aos="fade-up">Protección de datos</span>
+    <h1 class="text-4xl md:text-5xl font-headline font-extrabold tracking-tight leading-tight dark:text-white mb-4" data-aos="fade-up" data-aos-delay="100">
       Política de Tratamiento de <span class="text-gradient">Datos Personales</span>
     </h1>
-    <p class="text-gray-500 dark:text-gray-400 text-sm mb-2">DEOSOLUCIONES S.A.S. · NIT 1000190603</p>
-    <p class="text-gray-500 dark:text-gray-400 text-sm mb-10">Conforme a la Ley 1581 de 2012, el Decreto 1377 de 2013 y demás normas concordantes de la República de Colombia.</p>
+    <p class="text-gray-500 dark:text-gray-400 text-sm mb-2" data-aos="fade-up" data-aos-delay="150">DEOSOLUCIONES S.A.S. · NIT 1000190603</p>
+    <p class="text-gray-500 dark:text-gray-400 text-sm mb-10" data-aos="fade-up" data-aos-delay="200">Conforme a la Ley 1581 de 2012, el Decreto 1377 de 2013 y demás normas concordantes de la República de Colombia.</p>
 
-    <div class="legal text-gray-700 dark:text-gray-300 bg-white/70 dark:bg-gray-800/60 backdrop-blur-sm rounded-2xl p-6 md:p-10 border border-gray-100 dark:border-gray-700 shadow-sm">
+    <div class="legal text-gray-700 dark:text-gray-300 bg-white/70 dark:bg-gray-800/60 backdrop-blur-sm rounded-2xl p-6 md:p-10 border border-gray-100 dark:border-gray-700 shadow-sm" data-aos="fade-up" data-aos-delay="100">
 
       <h2 id="responsable">1. Identificación del Responsable del Tratamiento</h2>
       <p>El responsable del tratamiento de los datos personales recolectados a través de este sitio web es:</p>
@@ -225,7 +226,7 @@
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-8">Última actualización: 29 de mayo de 2026.</p>
     </div>
 
-    <div class="mt-10 text-center">
+    <div class="mt-10 text-center" data-aos="fade-up">
       <a href="contacto.html" class="inline-flex items-center gap-2 bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-bold px-8 py-3 rounded-xl shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-1 transition-all active:scale-95">
         <span class="material-symbols-outlined">arrow_back</span> Volver al contacto
       </a>
@@ -234,7 +235,7 @@
 </main>
 
 <!-- Footer -->
-<footer class="bg-white dark:bg-gray-900 w-full py-12 px-8 border-t border-gray-200 dark:border-gray-700 transition-colors duration-300">
+<footer class="bg-white dark:bg-gray-900 w-full py-12 px-8 border-t border-gray-200 dark:border-gray-700 transition-colors duration-300" data-aos="fade-up">
   <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
     <div>
       <img src="images/Logo6fn.png" alt="DEOSOLUCIONES Logo" class="h-12 w-auto md:h-16 lg:h-20 mb-4 dark:invert">
@@ -290,5 +291,7 @@
 <script src="chat.js" defer></script>
 <script type="module" src="src/auth.js"></script>
 <script src="efectos.js" defer></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>AOS.init({ duration: 800, once: true, offset: 80 });</script>
 </body>
 </html>
