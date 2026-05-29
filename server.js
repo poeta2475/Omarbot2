@@ -48,6 +48,10 @@ app.use(helmet({
     }
   },
   crossOriginEmbedderPolicy: false,
+  // Firebase signInWithPopup necesita window.opener para devolver el resultado.
+  // COOP 'same-origin' (default de Helmet) lo rompe → "Inicio de sesión cancelado".
+  // 'same-origin-allow-popups' mantiene la protección pero permite los popups propios.
+  crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
   referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
   permissionsPolicy: {
     features: {
