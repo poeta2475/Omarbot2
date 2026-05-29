@@ -396,11 +396,15 @@
         document.getElementById('contact-motivo').selectedIndex = 0;
         document.getElementById('contact-acepto').checked = false;
       } else {
-        throw new Error('Error del servidor');
+        // Mostrar el motivo real que devuelve el servidor (correo inválido, etc.)
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Error del servidor');
       }
     } catch (err) {
       status.className = 'text-center text-sm font-medium py-2 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400';
-      status.textContent = '❌ Hubo un error. Contáctanos directamente al 324 260 0709.';
+      status.textContent = '⚠️ ' + (err.message && err.message !== 'Failed to fetch'
+        ? err.message
+        : 'No pudimos enviar el mensaje. Contáctanos al 324 260 0709.');
       status.classList.remove('hidden');
     }
 

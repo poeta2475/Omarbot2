@@ -298,12 +298,15 @@
         agregarMensaje('sistema', '✅ Mensaje enviado correctamente');
         agregarMensaje('bot', `¡Gracias ${nombre}! 🎉\n\nRecibimos tu mensaje. Te contactaremos al ${telefono} en menos de 2 horas.\n\n¿Hay algo más en lo que te pueda ayudar?`);
         setTimeout(() => mostrarMenuFlotante(), 600);
-      } else { throw new Error(); }
-    } catch {
+      } else {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || '');
+      }
+    } catch (err) {
       btn.disabled = false;
       btn.style.background = '#ef4444';
-      btn.textContent = '❌ Error, intenta de nuevo';
-      setTimeout(() => { btn.style.background = ''; btn.textContent = 'Enviar mensaje 📩'; }, 3000);
+      btn.textContent = err.message ? '⚠️ ' + err.message : '❌ Error, intenta de nuevo';
+      setTimeout(() => { btn.style.background = ''; btn.textContent = 'Enviar mensaje 📩'; }, 3500);
     }
   };
 
