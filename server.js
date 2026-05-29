@@ -345,6 +345,8 @@ app.post('/api/contacto', contactoLimiter, async (req, res) => {
   }
   // Evita inyección de cabeceras (CRLF) en el asunto del correo
   const nombreAsunto = String(nombre).replace(/[\r\n]+/g, ' ').trim();
+
+  // 1) Guardar el contacto en Firestore (operación principal).
   try {
     await db.collection('contactos').add({
       nombre, telefono, correo,
@@ -354,7 +356,18 @@ app.post('/api/contacto', contactoLimiter, async (req, res) => {
       fechaAutorizacion: admin.firestore.FieldValue.serverTimestamp(),
       fecha: admin.firestore.FieldValue.serverTimestamp()
     });
+  } catch (error) {
+    console.error('Error guardando contacto en Firestore:', error);
+    return res.status(500).json({
+      error: process.env.NODE_ENV === 'production'
+        ? 'No pudimos guardar tu mensaje. Intenta de nuevo o escríbenos al 324 260 0709.'
+        : 'Firestore: ' + (error.message || 'error desconocido')
+    });
+  }
 
+  // 2) Enviar el email de notificación (secundario): si falla, el contacto
+  //    ya quedó guardado, así que NO devolvemos error al usuario.
+  try {
     await resend.emails.send({
       from: emailRemitente,
       to: emailDestinatarios,
@@ -379,12 +392,13 @@ app.post('/api/contacto', contactoLimiter, async (req, res) => {
         </div>
       `
     });
-
-    res.json({ message: 'Contacto guardado correctamente' });
   } catch (error) {
-    console.error('Error guardando contacto:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
+    // El correo de notificación falló (p. ej. Resend en sandbox o clave inválida),
+    // pero el contacto ya se guardó. Lo registramos y seguimos con éxito.
+    console.error('Aviso: el contacto se guardó pero falló el envío del email:', error?.message || error);
   }
+
+  res.json({ message: 'Contacto guardado correctamente' });
 });
 
 // ──────────────────────────────────────────
