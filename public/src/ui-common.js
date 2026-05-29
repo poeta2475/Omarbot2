@@ -27,16 +27,30 @@ function toggleDarkMode() {
 // ── Menú móvil ──
 function toggleMobileMenu() {
   const menu = document.getElementById('mobileMenu');
-  if (menu) menu.classList.toggle('hidden');
+  if (!menu) return;
+  if (menu.classList.contains('hidden')) {
+    menu.classList.add('menu-enter');
+    menu.classList.remove('hidden');
+    requestAnimationFrame(() => requestAnimationFrame(() => menu.classList.remove('menu-enter')));
+  } else {
+    menu.classList.add('menu-enter');
+    setTimeout(() => { menu.classList.add('hidden'); menu.classList.remove('menu-enter'); }, 300);
+  }
 }
 
 // ── Modal de login ──
 function toggleLoginModal() {
   const modal = document.getElementById('loginModal');
   if (!modal) return;
-  modal.classList.toggle('hidden');
-  if (modal.classList.contains('hidden')) modal.classList.remove('flex');
-  else modal.classList.add('flex');
+  if (modal.classList.contains('hidden')) {
+    modal.classList.add('modal-enter');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.remove('modal-enter')));
+  } else {
+    modal.classList.add('modal-enter');
+    setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex', 'modal-enter'); }, 250);
+  }
 }
 
 // Exponer en window para que otros scripts (auth.js, etc.) reutilicen la misma lógica.

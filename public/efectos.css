@@ -419,3 +419,31 @@ nav a.transition-colors::after {
     transition-timing-function: linear;
   }
 }
+
+/* ── ANIMACIÓN MENÚ MÓVIL: slide desde arriba + fade ── */
+#mobileMenu {
+  transition: opacity 0.3s ease, transform 0.4s var(--ease-soft);
+}
+#mobileMenu.menu-enter {
+  opacity: 0;
+  transform: translateY(-14px);
+}
+
+/* ── ANIMACIÓN MODAL LOGIN: backdrop fade + card scale ── */
+#loginModal {
+  transition: opacity 0.2s ease;
+}
+#loginModal.modal-enter { opacity: 0; }
+#loginModal > div {
+  transition: transform 0.35s var(--ease-soft), opacity 0.25s ease;
+}
+#loginModal.modal-enter > div {
+  transform: scale(0.95) translateY(10px);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #mobileMenu, #loginModal, #loginModal > div { transition: opacity 0.15s ease !important; }
+  #mobileMenu.menu-enter { transform: none !important; }
+  #loginModal.modal-enter > div { transform: none !important; }
+}
