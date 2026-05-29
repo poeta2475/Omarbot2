@@ -161,9 +161,12 @@
   <div class="max-w-7xl w-full mx-auto mb-10 relative z-10">
     <div class="relative w-full h-[360px] md:h-[460px] rounded-3xl overflow-hidden shadow-2xl border border-gray-100 dark:border-gray-700">
       <div id="carouselTrack" class="flex h-full transition-transform duration-700 ease-in-out">
-        <div class="min-w-full h-full relative">
-          <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&q=80" alt="Contacto" width="1200" height="500" class="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-700">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex flex-col items-center justify-center text-center p-6">
+        <div class="min-w-full h-full relative group">
+          <div class="w-full h-full bg-gradient-to-br from-blue-900 via-indigo-800 to-slate-800">
+            <div class="absolute top-[10%] right-[5%] w-64 h-64 bg-blue-400/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute bottom-[10%] left-[5%] w-80 h-80 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none"></div>
+          </div>
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
             <h2 class="text-4xl md:text-7xl font-headline font-black text-white mb-4 drop-shadow-lg uppercase tracking-tighter">Contacto</h2>
             <p class="text-white/90 text-lg md:text-xl font-medium mb-8">Déjanos tus datos</p>
             <a href="contacto.html" class="px-8 py-3 bg-white text-blue-600 font-bold rounded-2xl hover:bg-blue-50 transition-all hover:scale-105 flex items-center gap-2 shadow-xl">
@@ -171,7 +174,7 @@
             </a>
           </div>
         </div>
-        <div class="min-w-full h-full relative">
+        <div class="min-w-full h-full relative group">
           <img src="images/hikvision.jpg" alt="Hikvision" width="1200" height="500" loading="lazy" class="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-700">
           <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex flex-col items-center justify-center text-center p-6">
             <h2 class="text-4xl md:text-7xl font-headline font-black text-white mb-4 drop-shadow-lg uppercase tracking-tighter">Hikvision</h2>
@@ -181,7 +184,7 @@
             </a>
           </div>
         </div>
-        <div class="min-w-full h-full relative">
+        <div class="min-w-full h-full relative group">
           <img src="images/pcs_cl.jpg" alt="Productos" width="1200" height="500" loading="lazy" class="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-700">
           <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex flex-col items-center justify-center text-center p-6">
             <h2 class="text-4xl md:text-7xl font-headline font-black text-white mb-4 drop-shadow-lg uppercase tracking-tighter">Productos</h2>
@@ -191,7 +194,7 @@
             </a>
           </div>
         </div>
-        <div class="min-w-full h-full relative">
+        <div class="min-w-full h-full relative group">
           <img src="images/serv_tecni.jpg" alt="Servicios" width="1200" height="500" loading="lazy" class="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-700">
           <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex flex-col items-center justify-center text-center p-6">
             <h2 class="text-4xl md:text-7xl font-headline font-black text-white mb-4 drop-shadow-lg uppercase tracking-tighter">Servicios</h2>
@@ -202,18 +205,19 @@
           </div>
         </div>
       </div>
-      <button data-action="carousel-prev" aria-label="Slide anterior" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/70 hover:bg-white rounded-full flex items-center justify-center shadow-lg z-10 transition-all">
+      <button data-action="carousel-prev" aria-label="Slide anterior" class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-sm hover:bg-white hover:scale-110 rounded-full hidden sm:flex items-center justify-center shadow-xl z-10 transition-all">
         <span class="material-symbols-outlined text-gray-800">chevron_left</span>
       </button>
-      <button data-action="carousel-next" aria-label="Slide siguiente" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/70 hover:bg-white rounded-full flex items-center justify-center shadow-lg z-10 transition-all">
+      <button data-action="carousel-next" aria-label="Slide siguiente" class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-sm hover:bg-white hover:scale-110 rounded-full hidden sm:flex items-center justify-center shadow-xl z-10 transition-all">
         <span class="material-symbols-outlined text-gray-800">chevron_right</span>
       </button>
-      <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3">
-        <button data-action="carousel-goto" data-index="0" class="w-3 h-3 rounded-full bg-white transition-colors carousel-dot"></button>
-        <button data-action="carousel-goto" data-index="1" class="w-3 h-3 rounded-full bg-white/50 transition-colors carousel-dot"></button>
-        <button data-action="carousel-goto" data-index="2" class="w-3 h-3 rounded-full bg-white/50 transition-colors carousel-dot"></button>
-        <button data-action="carousel-goto" data-index="3" class="w-3 h-3 rounded-full bg-white/50 transition-colors carousel-dot"></button>
+      <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 items-center">
+        <button data-action="carousel-goto" data-index="0" class="h-3 w-3 rounded-full bg-white carousel-dot active" aria-label="Slide 1"></button>
+        <button data-action="carousel-goto" data-index="1" class="h-3 w-3 rounded-full bg-white/50 carousel-dot" aria-label="Slide 2"></button>
+        <button data-action="carousel-goto" data-index="2" class="h-3 w-3 rounded-full bg-white/50 carousel-dot" aria-label="Slide 3"></button>
+        <button data-action="carousel-goto" data-index="3" class="h-3 w-3 rounded-full bg-white/50 carousel-dot" aria-label="Slide 4"></button>
       </div>
+      <div id="carouselProgressFill"></div>
     </div>
   </div>
 
@@ -452,25 +456,41 @@
   const totalSlides = 4;
   const track = document.getElementById('carouselTrack');
   const dots = document.querySelectorAll('.carousel-dot');
+  const carouselContainer = track.parentElement;
+
+  function resetProgress() {
+    const fill = document.getElementById('carouselProgressFill');
+    if (!fill) return;
+    fill.style.animation = 'none';
+    fill.offsetWidth; // fuerza reflow para reiniciar la animación
+    fill.style.animation = 'carouselProgress 7s linear forwards';
+  }
 
   function moveCarousel(index) {
     currentSlide = index;
     track.style.transform = `translateX(-${currentSlide * 100}%)`;
     dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === currentSlide);
       dot.classList.toggle('bg-white', i === currentSlide);
       dot.classList.toggle('bg-white/50', i !== currentSlide);
     });
+    resetProgress();
     resetInterval();
   }
 
-  let carouselInterval = setInterval(() => { moveCarousel((currentSlide + 1) % totalSlides); }, 7000);
+  let isPaused = false;
+  let carouselInterval = setInterval(() => { if (!isPaused) moveCarousel((currentSlide + 1) % totalSlides); }, 7000);
   function resetInterval() {
     clearInterval(carouselInterval);
-    carouselInterval = setInterval(() => { moveCarousel((currentSlide + 1) % totalSlides); }, 7000);
+    carouselInterval = setInterval(() => { if (!isPaused) moveCarousel((currentSlide + 1) % totalSlides); }, 7000);
   }
   window.moveCarousel = moveCarousel;
   window.carouselPrev = () => moveCarousel((currentSlide - 1 + totalSlides) % totalSlides);
   window.carouselNext = () => moveCarousel((currentSlide + 1) % totalSlides);
+
+  // Pausa al pasar el cursor (desktop)
+  carouselContainer.addEventListener('mouseenter', () => { isPaused = true; });
+  carouselContainer.addEventListener('mouseleave', () => { isPaused = false; });
 
   // Swipe táctil en móvil
   let touchStartX = 0;
