@@ -292,7 +292,11 @@
     grid.innerHTML = products.map((product, i) => `
       <div class="product-enter bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all overflow-hidden group" style="animation-delay:${Math.min(i, 11) * 60}ms">
         <div class="bg-gray-100 dark:bg-gray-700 relative overflow-hidden h-56">
-          <img src="${escapeHtml(safeUrl(product.imagen_url) || 'https://via.placeholder.com/400x300?text=Sin+imagen')}" alt="${escapeHtml(product.nombre)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
+          <img src="${escapeHtml(safeUrl(product.imagen_url) || '')}" alt="${escapeHtml(product.nombre)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" onload="this.nextElementSibling.style.display='none'"/>
+          <div class="absolute inset-0 items-center justify-center flex-col gap-2 bg-gray-100 dark:bg-gray-700" style="display:${safeUrl(product.imagen_url) ? 'none' : 'flex'}">
+            <span class="material-symbols-outlined text-4xl text-gray-400">image_not_supported</span>
+            <span class="text-xs text-gray-400">Sin imagen</span>
+          </div>
           <div class="absolute top-2 right-2 bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-bold">
             ${escapeHtml(product.categoria || 'Sin categoría')}
           </div>
@@ -379,23 +383,32 @@
     }
     const url = editingDocId ? `/api/productos/${editingDocId}` : '/api/productos';
     const method = editingDocId ? 'PUT' : 'POST';
+    const saveBtn = document.querySelector('#productForm button[type="submit"]');
+    const originalText = saveBtn ? saveBtn.textContent : '';
+    if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Guardando...'; }
     try {
-      showNotification(editingDocId ? 'Actualizando...' : 'Guardando...', 'info');
       const token = await window.getAdminToken();
+      if (!token) throw new Error('No hay sesión activa. Cierra sesión y vuelve a entrar.');
       const response = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
-          ...(token ? { 'Authorization': 'Bearer ' + token } : {})
+          'Authorization': 'Bearer ' + token
         },
         body: JSON.stringify(productData)
       });
-      if (!response.ok) throw new Error((await response.json()).error || 'Error en el servidor');
-      showNotification(editingDocId ? 'Producto actualizado' : 'Producto agregado', 'success');
+      if (!response.ok) {
+        let errMsg = 'Error en el servidor';
+        try { errMsg = (await response.json()).error || errMsg; } catch {}
+        throw new Error(`(${response.status}) ${errMsg}`);
+      }
+      showNotification(editingDocId ? 'Producto actualizado ✓' : 'Producto agregado ✓', 'success');
       await loadProducts();
       closeProductModal();
     } catch (error) {
-      showNotification('Error: ' + error.message, 'error');
+      showNotification('Error al guardar: ' + error.message, 'error', 8000);
+    } finally {
+      if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = originalText; }
     }
   });
 
@@ -441,16 +454,17 @@
     }
   }
 
-  function showNotification(message, type = 'info') {
+  function showNotification(message, type = 'info', duration = 4000) {
+    document.querySelectorAll('.admin-notif').forEach(n => n.remove());
     const notification = document.createElement('div');
-    notification.className = `fixed top-4 right-4 z-[100] p-4 rounded-lg shadow-lg ${
+    notification.className = `admin-notif fixed top-4 right-4 z-[100] p-4 rounded-xl shadow-xl max-w-sm text-sm font-medium transition-opacity ${
       type === 'success' ? 'bg-green-500 text-white' :
-      type === 'error' ? 'bg-red-500 text-white' :
+      type === 'error'   ? 'bg-red-500 text-white' :
       'bg-blue-500 text-white'
     }`;
     notification.textContent = message;
     document.body.appendChild(notification);
-    setTimeout(() => { notification.style.opacity = '0'; setTimeout(() => notification.remove(), 300); }, 3000);
+    setTimeout(() => { notification.style.opacity = '0'; setTimeout(() => notification.remove(), 400); }, duration);
   }
 
   function handleLogout() {

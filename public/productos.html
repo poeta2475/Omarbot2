@@ -397,7 +397,11 @@
       return `
         <div class="product-enter bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all overflow-hidden group" style="animation-delay:${Math.min(i, 11) * 60}ms">
           <div class="bg-gray-100 dark:bg-gray-700 relative overflow-hidden">
-            <img src="${escapeHtml(safeUrl(p.imagen_url) || 'https://via.placeholder.com/400x300?text=Sin+imagen')}" alt="${escapeHtml(p.nombre)}" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"/>
+            <img src="${escapeHtml(safeUrl(p.imagen_url) || '')}" alt="${escapeHtml(p.nombre)}" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" onload="this.nextElementSibling.style.display='none'"/>
+            <div class="absolute inset-0 items-center justify-center flex-col gap-1 bg-gray-100 dark:bg-gray-700" style="display:${safeUrl(p.imagen_url)?'none':'flex'}">
+              <span class="material-symbols-outlined text-4xl text-gray-400">image_not_supported</span>
+              <span class="text-xs text-gray-400">Sin imagen</span>
+            </div>
             <div class="absolute top-3 right-3 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold">
               ${escapeHtml(p.categoria || 'General')}
             </div>
