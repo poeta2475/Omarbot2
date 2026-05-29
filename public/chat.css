@@ -74,7 +74,7 @@
 .menu-btn.home { border-color:rgba(79,70,229,0.2); color:#2563eb; background:#eff6ff; }
 .menu-btn.home:hover { background:#2563eb; color:white; }
 
-#wsp-btn { position:fixed; bottom:100px; right:30px; width:56px; height:56px; background:#25D366; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 15px rgba(37,211,102,0.4); z-index:9998; transition:transform 0.2s; text-decoration:none; }
+#wsp-btn { position:fixed; bottom:30px; right:102px; width:56px; height:56px; background:#25D366; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 15px rgba(37,211,102,0.4); z-index:9998; transition:transform 0.2s; text-decoration:none; }
 #wsp-btn:hover { transform:scale(1.1); }
 
 /* ───── DARK MODE ───── */
@@ -108,7 +108,7 @@
 /* ───── MÓVIL ESTRECHO: compactar botones flotantes ───── */
 @media (max-width: 480px) {
   #chat-btn { bottom:20px; right:16px; width:54px; height:54px; }
-  #wsp-btn  { bottom:84px; right:18px; width:50px; height:50px; }
+  #wsp-btn  { bottom:20px; right:82px; width:50px; height:50px; }
   #chat-box { bottom:84px; }
 }
 
