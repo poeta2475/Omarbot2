@@ -485,8 +485,40 @@ nav a.transition-colors::after {
 .floating-card-3 { animation-duration: 4.2s; animation-delay: -2.4s; }
 @keyframes cardFloat {
   0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-10px); }
+  50%      { transform: translateY(-12px); }
+}
+/* Aun con animaciones reducidas mantenemos la flotación (es parte del diseño),
+   pero más lenta y suave. */
+@media (prefers-reduced-motion: reduce) {
+  .floating-card { animation-duration: 6s; }
+}
+
+/* ── ORBE DEL ROSTRO: brillo pulsante + anillos (hero biometría) ── */
+.face-orb {
+  animation: faceOrbGlow 3.6s ease-in-out infinite;
+}
+@keyframes faceOrbGlow {
+  0%, 100% { box-shadow: 0 0 30px 4px rgba(37,99,235,0.28), inset 0 0 30px rgba(79,70,229,0.10); }
+  50%      { box-shadow: 0 0 55px 12px rgba(79,70,229,0.50), inset 0 0 45px rgba(6,182,212,0.18); }
+}
+/* Anillos concéntricos que crecen y se desvanecen */
+.face-pulse-ring {
+  position: absolute;
+  width: 18rem; height: 18rem;
+  border-radius: 9999px;
+  border: 2px solid rgba(79,70,229,0.45);
+  animation: facePulseRing 3.6s ease-out infinite;
+  pointer-events: none;
+}
+.face-pulse-ring.ring-delay { animation-delay: 1.8s; }
+@media (min-width: 768px) {
+  .face-pulse-ring { width: 20rem; height: 20rem; }
+}
+@keyframes facePulseRing {
+  0%   { transform: scale(0.85); opacity: 0.6; }
+  100% { transform: scale(1.45); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .floating-card { animation: none; }
+  .face-orb { animation-duration: 6s; }
+  .face-pulse-ring { display: none; }
 }
