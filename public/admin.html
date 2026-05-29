@@ -479,17 +479,30 @@
   // Token de Firebase del usuario actual (para autorizar las operaciones del panel).
   window.getAdminToken = () => auth.currentUser ? auth.currentUser.getIdToken() : Promise.resolve(null);
 
+  // Redirige a index.html mostrando antes el motivo (para poder diagnosticar
+  // por qué se cierra el panel en vez de hacerlo en silencio).
+  function expulsar(motivo) {
+    console.warn('[admin] Acceso denegado:', motivo);
+    showNotification('Sin acceso al panel: ' + motivo, 'error');
+    setTimeout(() => { window.location.href = 'index.html'; }, 6000);
+  }
+
   onAuthStateChanged(auth, async (user) => {
-    if (!user) { window.location.href = 'index.html'; return; }
+    if (!user) { expulsar('no hay sesión iniciada'); return; }
     // Verificar que el usuario realmente tenga rol de administrador.
     try {
       const snap = await getDoc(doc(db, 'usuarios', user.uid));
-      const rol = snap.exists() ? snap.data().rol : null;
-      if (rol !== 'admin' && rol !== 'administrador') {
-        window.location.href = 'index.html';
+      if (!snap.exists()) {
+        expulsar('no existe documento usuarios/' + user.uid + ' (el ID del documento debe ser exactamente tu uid)');
+        return;
       }
-    } catch {
-      window.location.href = 'index.html';
+      const rol = snap.data().rol;
+      if (rol !== 'admin' && rol !== 'administrador') {
+        expulsar('tu rol es "' + rol + '", no "admin" (uid: ' + user.uid + ')');
+      }
+      // Si el rol es admin, no hace nada: permanece en el panel.
+    } catch (e) {
+      expulsar('error leyendo Firestore: ' + (e && e.code ? e.code : e && e.message ? e.message : e));
     }
   });
   window.handleLogout = handleLogout;
