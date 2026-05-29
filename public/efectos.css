@@ -212,7 +212,7 @@ select:focus-visible, textarea:focus-visible {
 
 /* Elevación suave al pasar el cursor sobre tarjetas con borde redondeado.
    Se aplica de forma amplia pero solo añade profundidad, nada disruptivo. */
-.rounded-xl, .rounded-2xl, .rounded-3xl { transition: transform .35s cubic-bezier(.2,.7,.3,1), box-shadow .35s ease; }
+.rounded-xl, .rounded-2xl, .rounded-3xl { transition: transform .35s cubic-bezier(.2,.7,.3,1), box-shadow .35s ease, background-color .3s ease; }
 [data-aos].rounded-xl:hover,
 [data-aos].rounded-2xl:hover {
   transform: translateY(-6px);
@@ -318,3 +318,47 @@ footer .flex.gap-4 > a:hover {
 .dark .trust-strip-item:hover {
   background: #1e3a8a30;
 }
+
+/* ───── A: Nav links — subrayado que crece al hover ───── */
+nav a.transition-colors {
+  position: relative;
+  padding-bottom: 2px;
+}
+nav a.transition-colors::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 50%;
+  width: 0; height: 2px;
+  background: linear-gradient(90deg, #2563eb, #4f46e5);
+  border-radius: 2px;
+  transition: width 0.25s ease, left 0.25s ease;
+}
+nav a.transition-colors:hover::after {
+  width: 100%; left: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  nav a.transition-colors::after { display: none; }
+}
+
+/* ───── C: Select con flecha de marca (reemplaza flecha nativa del SO) ───── */
+select.appearance-none {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 2.5rem;
+}
+.dark select.appearance-none {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+/* ───── D: Transición suave en todos los inputs del sitio ───── */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+textarea {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* ───── F: Zoom de imagen de producto con duración explícita ───── */
+.product-enter img { transition: transform 0.3s ease; }
