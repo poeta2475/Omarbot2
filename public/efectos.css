@@ -99,7 +99,7 @@
    ════════════════════════════════════════ */
 
 /* Render tipográfico más nítido y scroll suave */
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
