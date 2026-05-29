@@ -473,3 +473,20 @@ nav a.transition-colors::after {
      diseño), pero más lento y suave para no molestar */
   .face-scan-line { animation-duration: 4s; }
 }
+
+/* ── TARJETAS FLOTANTES (hero biometría index.html) ── */
+.floating-card {
+  animation: cardFloat 4s ease-in-out infinite;
+  will-change: transform;
+}
+/* tiempos y retrasos distintos para que floten de forma natural, no en bloque */
+.floating-card-1 { animation-duration: 3.8s; animation-delay: 0s;    }
+.floating-card-2 { animation-duration: 4.6s; animation-delay: -1.2s; }
+.floating-card-3 { animation-duration: 4.2s; animation-delay: -2.4s; }
+@keyframes cardFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .floating-card { animation: none; }
+}
