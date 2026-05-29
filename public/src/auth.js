@@ -303,7 +303,7 @@ onAuthStateChanged(auth, async (user) => {
 
     if (user && user.emailVerified) {
         loginBtns.forEach(btn => {
-            btn.innerHTML = '<span class="material-symbols-outlined mr-1">logout</span> Salir';
+            btn.innerHTML = '<span class="inline-flex items-center justify-center gap-1.5 leading-none"><span class="material-symbols-outlined text-[18px] leading-none">logout</span>Salir</span>';
             btn.onclick = (e) => { e.preventDefault(); handleLogout(); };
         });
 
