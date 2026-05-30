@@ -303,8 +303,13 @@ onAuthStateChanged(auth, async (user) => {
     const adminLinks = document.querySelectorAll('.admin-link');
 
     if (user && user.emailVerified) {
+        // Avatar personalizado (mascota) solo para la cuenta del dueño.
+        const esDueno = (user.email || '').toLowerCase() === 'omarsena2475@gmail.com';
+        const avatar = esDueno
+            ? '<img src="images/mascota.jpg" alt="Mi mascota" class="w-7 h-7 rounded-full object-cover border-2 border-blue-500 shadow-sm" title="¡Hola! 🐶"/>'
+            : '<span class="material-symbols-outlined text-[18px] leading-none">logout</span>';
         loginBtns.forEach(btn => {
-            btn.innerHTML = '<span class="inline-flex items-center justify-center gap-1.5 leading-none"><span class="material-symbols-outlined text-[18px] leading-none">logout</span>Salir</span>';
+            btn.innerHTML = `<span class="inline-flex items-center justify-center gap-2 leading-none">${avatar}Salir</span>`;
             btn.onclick = (e) => { e.preventDefault(); handleLogout(); };
         });
 
